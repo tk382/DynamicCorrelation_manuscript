@@ -82,116 +82,47 @@ Consider 2-dimensional data for $N$ subjects $\bm{y}_i \in \mathbb{R}^2$, $i = 1
     \begin{bmatrix} y_{i1} \\ y_{i2} \end{bmatrix} = 
     \begin{bmatrix} b_{1} \\ b_{2} \end{bmatrix} + 
     \begin{bmatrix} \bm{z}_i^T \bm{\beta}_1 \\ \bm{z}_i^T \bm{\beta}_2 \end{bmatrix} + 
-    \begin{bmatrix} {u_{i1}} \\ {u_{i2}} \end{bmatrix}\\
+    \begin{bmatrix} {u_{i1}} \\ {\hat{u}_{i2}} \end{bmatrix}\\
     \begin{bmatrix} {u_{i1}} \\ u_{i2} \end{bmatrix} 
     \sim \mathcal{N}\left(
         \begin{bmatrix} 0 \\ 0 \end{bmatrix}, 
-        \begin{bmatrix} \rho_{11} & \rho_{12}(\bm{x}_i) \\ 
-        \rho_{12}(\bm{x}_i) & \rho_{22} \end{bmatrix}
+        \begin{bmatrix} \sigma_1^2 & \rho_{12}(\bm{x}_i) \\ 
+        \rho_{12}(\bm{x}_i) & \sigma_2^2 \end{bmatrix}
     \right)
     \end{multlined}
     \label{eq:framework_2genes}
 \end{equation}
-$\bm{\beta}_1$ and $\bm{\beta}_2$ are coefficients with length $R$  for the mean term $Z$. $\rho_{11}$ and $\rho_{22}$ are fixed scalars but $\rho_{12}$ varies with the covariate. We define $\bm{\alpha} \in \mathbb{R}^{P}$ and a scalar $\alpha_0$ as the linear coefficients to model $\rho_{12}$ as follows.
+$\bm{\beta}_1$ and $\bm{\beta}_2$ are coefficients with length $R$  for the mean term $Z$. $\sigma_1^2$ and $\sigma_2^2$ are fixed scalars but $\rho_{12}$ varies with the covariate. We define $\bm{\alpha} \in \mathbb{R}^{P}$ and a scalar $\alpha_0$ as the linear coefficients to model $\rho_{12}$ as follows.
 \begin{equation}
     \rho_{12}(\bm{x}_i) = \rho_{12}(\bm{x}_i^T\bm{\alpha} + \alpha_0) \label{eq:rho}
 \end{equation}
-Our parameter of interest is $\bm{\alpha}$ while all others --- $\alpha_0$, $\bm{b}$, $\bm{\beta}$, $\rho_{11}$, $\rho_{22}$ --- are nuisance parameters. Our goal is to develop a method that tests the following null hypothesis
+Our parameter of interest is $\bm{\alpha}$ while all others --- $\alpha_0$, $\bm{b}$, $\bm{\beta}$, $\sigma_1^2$, $\sigma_2^2$ --- are nuisance parameters. Our goal is to develop a method that tests the following null hypothesis
 \begin{equation}
     H_0: \bm{\alpha} = \bm{0}.
     \label{eq:null}
 \end{equation}
-Under the null hypothesis, $\rho_{12}(\bm{x}_i, \bm{\alpha}) = \rho_{12}(\alpha_0)$ is a constant. The linearity and additivity assumptions in (\ref{eq:rho}) are standard, and since $\rho_{12}$ can take any non-linear form, (\ref{eq:rho}) still is a flexible framework. Before we introduce the detailed methodology, we first present our result below.
+Under the null hypothesis, $\rho_{12}(\bm{x}_i^T\bm{\alpha} + \alpha_0) = \rho_{12}(\alpha_0)$ is a constant regardless of $\bm{x}_i$. The linearity and additivity assumptions in (\ref{eq:rho}) are standard, and since $\rho_{12}$ can take any non-linear form, (\ref{eq:rho}) still is a flexible framework. Before we introduce the detailed methodology, we first present our result below.
 
 \begin{prop}
-Consider the model in (\ref{eq:framework_2genes}). If all the covariates $X$ are centered, $\sum_{i=1}^{N} x_{ip} = 0$ for $p = 1, \cdots, P$, and the non-diagonal term follows the function $\rho_{12}$ as defined in (\ref{eq:rho}), the score statistic does not depend on the unknown function $\rho_{12}$ and follows $\chi_P^2$ under the null hypothesis (\ref{eq:null}). 
+Consider the model in (\ref{eq:framework_2genes}). If the non-diagonal term of $\Sigma$ follows the function $\rho_{12}$ as defined in (\ref{eq:rho}), the score statistic does not depend on the unknown function $\rho_{12}$ and follows $\chi_P^2$ under the null hypothesis (\ref{eq:null}). 
 \label{theorem:q}
 \end{prop}
 
-The score statistic is later introduced in (\ref{eq:q}). The model (\ref{eq:framework_2genes}) is close to a multivariate regression model of $\bm{y}_i$ against the mean term $\bm{z}_i$ with intercept $\bm{b}_0$, slope $\begin{bmatrix} \bm{\beta}_1 & \bm{\beta}_2 \end{bmatrix}$, and error term $\bm{u}_i$. The difference is that its error variance depends on the covariate $\bm{x}_i$. The function $\rho_{12}$ represents an unknown form of heteroskedasticity between the two variables $1$ and $2$. In the context of gene coexpression of African Americans, $\bm{y}_i$ is gene expression level of an African American individual $i$ at two selected genes, and $\bm{x}_i$ is a $P$-dimensional covariate matrix for individual $i$ that holds information about genetic ancestry. It can be a scalar that represents the proportion of African ancestry in the genome, a vector of the first few principal components of the genotypes, or a vector of local ancestry at multiple loci. In the application example in section \ref{sec:applications}, we focus on scalar $\bm{x}_i$ for straightforward interpretability. \\
+The model (\ref{eq:framework_2genes}) is close to a multivariate regression model of $\bm{y}_i$ against the mean term $\bm{z}_i$ with intercept $\bm{b}_0$, slope $\begin{bmatrix} \bm{\beta}_1 & \bm{\beta}_2 \end{bmatrix}$, and error term $\bm{u}_i$. The difference is that its error variance depends on the covariate $\bm{x}_i$. The function $\rho_{12}$ represents an unknown form of heteroskedasticity between the two variables $1$ and $2$. In the context of gene coexpression of African Americans, $\bm{y}_i$ is gene expression level of an African American individual $i$ at two selected genes, and $\bm{x}_i$ is a $P$-dimensional covariate matrix for individual $i$ that holds information about genetic ancestry. It can be a scalar that represents the proportion of African ancestry in the genome, a vector of the first few principal components of the genotypes, or a vector of local ancestry at multiple loci. In the application example in section \ref{sec:applications}, we focus on scalar $\bm{x}_i$ for straightforward interpretability. \\
 
-With some mathematical tweaks, we can write the likelihood of (\ref{eq:framework_2genes}) as follows
-\begin{equation}
-\begin{multlined}
-\ell(\bm{\alpha}, \bm{b}, \bm{\beta}, \rho_{11}, \rho_{22}) = \\
--\frac{N}{2} log(2\pi) - \frac{1}{2} \sum_{i=1}^{N} log (\sigma_{wi}^2) - \sum_{i=1}^{N} \frac{(w_i - \mu_{wi})^2}{2\sigma_{wi}^2}\\
--\frac{N}{2} log(2\pi) - \frac{1}{2} \sum_{i=1}^{N} log (\sigma_{vi}^2) - \sum_{i=1}^{N} \frac{(v_i - \mu_{vi})^2}{2\sigma_{vi}^2}\\
-= -Nlog(2\pi) - \frac{1}{2} \sum_{i=1}^{N}log(\sigma_{wi}^2) - - \frac{1}{2} \sum_{i=1}^{N} log(\sigma_{vi}^2) - \sum_{i=1}^{N} \frac{u_{wi}^2}{2\sigma_{wi}^2} - \sum_{i=1}^{N} \frac{u_{vi}^2}{2\sigma_{vi}^2}
-\end{multlined}
-    \label{eq:likelihood_2genes}
-\end{equation}
-with the variables defined as following.
-\begin{align*}
-w_i = \frac{y_{i1}}{\sqrt{\rho_{11}}} + \frac{y_{i2}}{\sqrt{\rho_{22}}}, 
-\hspace{6mm} &
-v_i = \frac{y_{i1}}{\sqrt{\rho_{11}}} - \frac{y_{i2}}{\sqrt{\rho_{22}}},\\
-u_{wi} = \frac{u_{i1}}{\sqrt{\rho_{11}}} + \frac{u_{i2}}{\sqrt{\rho_{22}}}, 
-\hspace{6mm} &
-u_{vi} = \frac{u_{i1}}{\sqrt{\rho_{11}}} - \frac{u_{i2}}{\sqrt{\rho_{22}}}.\\
-\sigma_{wi}^2 = 2 + \frac{2\rho_{12}(\bm{x}_i^T \bm{\alpha})}{\sqrt{\rho_{11}\rho_{22}}}, \hspace{6mm}&
-\sigma_{vi}^2 = 2 - \frac{2\rho_{12}(\bm{x}_i^T \bm{\alpha})}{\sqrt{\rho_{11}\rho_{22}}},\\
-\mu_{wi} = \frac{{b}_1}{\sqrt{\rho_{11}}} + \frac{{b}_2}{\sqrt{\rho_{22}}} + &\bm{z}_i^T \left(\frac{\bm{\beta}_1}{\sqrt{\rho_{11}}} + \frac{\bm{\beta}_2}{\sqrt{\rho_{22}}}\right),\\
-\mu_{vi} = \frac{{b}_1}{\sqrt{\rho_{11}}} - \frac{{b}_2}{\sqrt{\rho_{22}}} + &\bm{z}_i^T \left(\frac{\bm{\beta}_1}{\sqrt{\rho_{11}}} - \frac{\bm{\beta}_2}{\sqrt{\rho_{22}}}\right)
-\end{align*}
-The intuition of (\ref{eq:likelihood_2genes}) is to think of $w_i$ and $v_i$ as the normalized sum and difference of the two variables. This way, the likelihood is expressed as the product of two independent univariate likelihood instead of the more complicated bivariate likelihood. Now the covariance problem is effectively transformed to modeling the variance problem, and we can apply the results from literature on univariate heteroskedasticity. Given the likelihood (\ref{eq:likelihood_2genes}), we have two well-known tools to test the null hypothesis (\ref{eq:null}): likelihood ratio test and Rao's score test (\cite{breusch1979simple}). \\
+We have two well-known tools to test the null hypothesis (\ref{eq:null}): likelihood ratio test and Rao's score test (\cite{breusch1979simple}). \\
 
-The likelihood ratio test has a few disadvantages compared to the score test. It requires the full specification of the function $\rho$ to estimate the maximum likelihood estimate (MLE) of $\bm{\alpha}$ both under the null hypothesis and under the alternative hypothesis. Possible functions of $\rho_{12}$ are any kind of sigmoid function bound to $(-\sqrt{\rho_{11}\rho_{22}}$, $\sqrt{\rho_{11}\rho_{22}})$ such as logistic function, hyperbolic tangent function, or any cumulative distribution supported on the whole real line. This modeling strategy leads to one disadvantage; as mentioned in the previous section, we would like to impose as few assumptions on the specific form of heteroskedasticity as possible. If $\rho_{12}$ is highly misspecified, we sacrifice the statistical power. Another disadvantage is that most of the reasonable assumptions of $\rho$, such as the sigmoid functions mentioned above, do not lead to a closed form MLE of $\bm{\alpha}$ under the alternative hypothesis. It would require us to numerically optimize the likelihood, leading to computational inefficiency, especially when the test space is large as in our application of gene coexpression. \\
+The likelihood ratio test has a few disadvantages compared to the score test. It requires the full specification of the function $\rho$ to estimate the maximum likelihood estimate (MLE) of $\bm{\alpha}$ both under the null hypothesis and under the alternative hypothesis. Possible functions of $\rho_{12}$ are any kind of sigmoid function bound to $(-\sqrt{\sigma_1^2\sigma_2^2}$, $\sqrt{\sigma_1^2\sigma_2^2})$ such as logistic function, hyperbolic tangent function, or any cumulative distribution supported on the whole real line. This modeling strategy leads to one disadvantage; as mentioned in the previous section, we would like to impose as few assumptions on the specific form of heteroskedasticity as possible. If $\rho_{12}$ is highly misspecified, we sacrifice the statistical power. Another disadvantage is that most of the reasonable assumptions of $\rho$, such as the sigmoid functions mentioned above, do not lead to a closed form MLE of $\bm{\alpha}$ under the alternative hypothesis. It would require us to numerically optimize the likelihood, leading to computational inefficiency, especially when the test space is large as in our application of gene coexpression. \\
 
 On the other hand, Rao's score test, unlike the likelihood ratio test, only requires the MLE of $\bm{\alpha}$ under the null hypothesis (\cite{rao1973linear}). Moreover, under our linear and additive model ($\rho_{12}(\bm{x}_i) = \rho_{12}(\bm{x}_i^T\bm{\alpha})$), the test statistic does not depend on the form of $\rho_{12}$ while maintaining its asymptotic property as long as $\rho_{12}$ is twice differentiable. In order to test (\ref{eq:null}), we expand the result from \cite{breusch1979simple} to derive the test statistic.\\ 
 
-The score test allows us to replace all the nuisance parameters with the MLEs under the null hypothesis. We can therefore replace $\alpha_0, \bm{\beta}$, $\bm{b}$, $\rho_{11}$, and $\rho_{22}$ with their respective MLEs that result from ordinary least squares linear regression. The first derivative of the likelihood evaluated at $\bm{\alpha}=\bm{0}, \alpha_0 = \hat{\alpha}_0, \bm{\beta} = \bm{\hat{\beta}}$, $\bm{b} = \bm{\hat{b}}$, $\rho_{11} = \hat{\rho}_{11}$, and $\rho_{22} = \hat{\rho}_{22}$ is as follows. We also define $\hat{u}_{i1}$ and $\hat{u}_{i2}$ as the OLS residuals from (\ref{eq:framework_2genes}).
+The Fisher Information of the model (\ref{eq:framework_2genes}) is block diagonal: one block for mean parameters $\bm{b}$, $\bm{\beta}$ and another block for variance parameters $\sigma_1^2$, $\sigma_2^2$, $\alpha_0$, and $\bm{\alpha}$. Therefore, to derive the score statistic, we only need the first and second derivatives of the log likelihood with respect to the variance parameters. Moreover, we can plug in the MLEs of the nuisance parameters to get the score statistic. So, we replace $u_{i1}$ with the OLS residuals $\hat{u}_{i1}$ from the regression of (\ref{eq:framework_2genes}). The score statistic is as follows, and the detailed derivation is in the Appendix A. 
 \begin{equation}
-\begin{multlined}
-\bm{\tilde{d}}_{\alpha} = \frac{\partial \ell(\bm{\alpha}, \bm{b}_0, \bm{\beta})} {\partial \bm{\alpha}}\mid_{\bm{\alpha}=\bm{0}, \alpha_0 = \hat{\alpha}_0, \bm{\beta} = \bm{\hat{\beta}}, \bm{b} = \bm{\hat{b}}, \rho_{11} = \hat{\rho}_{11}, \rho_{22} = \hat{\rho}_{22}} =\\
--\frac{\rho_{12}'(\alpha_0)}{2\sqrt{\rho_{11}\rho_{22}}} \sum_{i=1}^{N} \left(
-    \frac{\bm{x}_i}{\hat{\sigma}_{w}^2} 
-    \left( 1-\frac{\hat{u}_{wi}^2}{\hat{\sigma}_{w}^2}\right) - 
-    \frac{\bm{x}_i}{\hat{\sigma}_{v}^2} 
-    \left( 1-\frac{\hat{u}_{vi}^2}{\hat{\sigma}_{v}^2}\right) 
-    \right)
-\end{multlined}
-\label{first_derivative}
-\end{equation}
-where the error variance estimates are $\hat{\sigma}_w^2 = \sum_{i=1}^{N} \hat{u}_{wi}^2/N$ and $\hat{\sigma}_{vi}^2 = \sum_{i=1}^{N}\hat{u}_v^2/N$. The derivation is in the appendix. The Fisher information for $\bm{\alpha}$ is
-\begin{equation}
-\begin{multlined}
-        \tilde{\mathcal{I}}_{\bm{\alpha}\bm{\alpha}^T} = \mathcal{I}_{\bm{\alpha}\bm{\alpha}^T}\mid_{
-        \bm{\alpha}=\bm{0}, 
-        \alpha_0 = \hat{\alpha}_0,
-        \bm{b} = \bm{\hat{b}},
-        \bm{\beta} = \bm{\hat{\beta}},
-        {\rho}_{11} = \hat{\rho}_{11},
-        {\rho}_{22} = \hat{\rho}_{22}}\\
-        = \frac{{\rho'}^2_{12}(\hat{\alpha}_0)}{4\hat{\rho}_{11}\hat{\rho}_{22}}\cdot 2 \cdot \left(\frac{1}{\hat{\sigma}_{w}^2} +  \frac{1}{\hat{\sigma}_{v}^2}\right) \sum_{i=1}^{N} \bm{x}_i \bm{x}_i^T
-    \end{multlined}
-\end{equation}
-All other second-order derivatives --- 
-$\tilde{\mathcal{I}}_{\bm{\alpha}\bm{\beta}^T}$,
-$\tilde{\mathcal{I}}_{\bm{\alpha}\alpha_0}$,
-$\tilde{\mathcal{I}}_{\bm{\alpha}\rho_{11}}$,
-$\tilde{\mathcal{I}}_{\bm{\alpha}\rho_{22}}$,
-$\tilde{\mathcal{I}}_{\bm{\alpha}\bm{b}^T}$ --- are $\bm{0}$ when the covariates are centered. The test statistic $q$ for the variables 1 and 2 is
-\begin{equation}
-    \begin{multlined}
-    q = \tilde{d}_{\bm{\alpha}}^T \tilde{I}_{\bm{\alpha}\bm{\alpha}^T}^{-1}
-    \tilde{d}_{\bm{\alpha}}
-    =\frac{1}{2}\left( \frac{1}{\hat{\sigma}_w^4}+\frac{1}{\hat{\sigma}_v^4}\right)^{-1}
-\left(\sum_{i=1}^{N} \bm{x}_{i} 
-\left(
-\frac{\hat{\sigma}_w^2-\hat{u}_{wi}^2}{\hat{\sigma}_w^4}- \frac{\hat{\sigma}_v^2-\hat{u}_{vi}^2}{\hat{\sigma}_v^4}
-\right)
-\right)^T \\
-\left( \sum_{i=1}^{N} \bm{x}_i^T \bm{x}_i \right)^{-1}
-\left(
-\sum_{i=1}^{N} \bm{x}_{i} 
-\left(
-\frac{\hat{\sigma}_w^2-\hat{u}_{wi}^2}{\hat{\sigma}_w^4}- \frac{\hat{\sigma}_v^2-\hat{u}_{vi}^2}{\hat{\sigma}_v^4}
-\right)
-\right)
-    \end{multlined}
+    q_{12} = \frac{1}{N(\hat{\sigma}_1^2\hat{\sigma}_2^2+\hat{\rho}_{12}^2)}\sum_{i=1}^{N} (\hat{u}_{i1}\hat{u}_{i2}-\hat{\rho}_{12})\bm{\tilde{x}}_i^T (\sum_{i=1}^{N}\bm{\tilde{x}}_i \bm{\tilde{x}}_i^T)^{-1}
+    \sum_{i=1}^{N} (\hat{u}_{i1}\hat{u}_{i2}-\hat{\rho}_{12})\bm{\tilde{x}}_i
     \label{eq:q}
 \end{equation}
-where the unknown function $\rho_{12}$ has been canceled out. Every component of the test statistic is easily acquired from the data, and the computational burden is low. Just as importantly, it is flexible as it allows any form of heteroskedasticity $\rho_{12}$. Under this setting, $q$ asymptotically follows $\chi_{P}^2$ (\cite{breusch1979simple}).\\
+where $\hat{\rho}_{12} = \rho_{12}(\hat{\alpha}_0) = \frac{1}{N} \sum_{i=1}^{N} \hat{u}_{i1}\hat{u}_{i2}$, and $\bm{\tilde{x}}_i$ is the covariate with the intercept term: $\begin{bmatrix} 1 & \bm{x}_i \end{bmatrix}^T$. The first derivative of $\rho_{12}'$ has been canceled out, and therefore the score statistic does not depend on the function $\rho_{12}$; it only depends on the MLE of the covariance $\hat{\rho}_{12}$. Every component of the test statistic is easily acquired from the data, and the computational burden is low. Just as importantly, it is flexible as it allows any form of $\rho_{12}$. Under this setting, $q$ asymptotically follows $\chi_{P}^2$ (\cite{breusch1979simple}).\\
 
 However, even though the introduced test statistic has convenient asymptotic properties, the inference might not be correct under finite sample size. The error is in the order of $N^{-1}$ (\cite{harris1985asymptotic}), and many Monte Carlo experiments show that the test rejects the null hypothesis less frequently than indicated by its nominal size (\cite{ godfrey1978testing, griffiths1986monte}. In response, corrections have been suggested (\cite{cribari2001monotonic, harris1985asymptotic}), and we apply the method from \cite{honda1988size} to ensure the validity of the asymptotic properties even under the small sample size. The details of the small-sample correction, as well as the detailed derivation of the test statistic, are shown in the Appendix.\\
 
@@ -209,7 +140,7 @@ We propose a way to combine the test statistics to test (\ref{eq:globalnull}). \
 d_1 = {q}_{12} + {q}_{13} + \cdots + {q}_{1K} = \sum_{k=2}^{K} {q}_{1k}.
 \label{eq:d}
 \end{equation}
-Note that $q$ has been constructed from normalized data of $w$ and $v$ in (\ref{eq:likelihood_2genes}). It is, therefore, the most natural to add them without additional weighting. We believe the statistic $d_1$ in  (\ref{eq:d}) improves the statistical power because even if the effect sizes for each gene pair may be too small to be detected, when combined, they can form a stronger signal. \\
+Note that $q$ has been constructed from normalized data of $w$ and $v$. It is, therefore, the most natural to add them without additional weighting. We believe the statistic $d_1$ in  (\ref{eq:d}) improves the statistical power because even if the effect sizes for each gene pair may be too small to be detected, when combined, they can form a stronger signal. \\
 
 We derive the null distribution of $d_1$ to test (\ref{eq:globalnull}). Although each ${q}_{1k}$ follows $\chi_{P}^2$, they are correlated to one another, so the null distribution is not trivial. We devise a way to simulate the null distribution as a finite sum of Gamma distributions so that we can estimate the empirical quantile of $d_1$. We therefore propose the following.
 
@@ -222,14 +153,11 @@ To derive the empirical null distribution of $d_1$, We start by re-writing the p
 \begin{align}
 q = \sum_{p=1}^{P}
  \left(\frac{1}{\sqrt{N}}
- \sqrt{\frac{\hat{\sigma}_w^4 \hat{\sigma}_v^4}{\hat{\sigma}_w^4 + \hat{\sigma}_v^4}}
- \sum_{i=1}^{N} x_{ip} \left( \frac{\hat{\sigma}_w^2 - \hat{u}_{wi}^2}{\hat{\sigma}_w^4}
- - \frac{\hat{\sigma}_v^2 - \hat{u}_{vi}^2}{\hat{\sigma}_v^4}
- \right)
+ \sum_{i=1}^{N} \frac{x_{ip} \left(\hat{u}_{i1}\hat{u}_{i2} - \hat{\rho}_{12} \right)}{\sqrt{\hat{\sigma}_{1}^2\hat{\sigma}_{2}^2 + \hat{\rho}_{12}^2}}
 \right)^2 = \sum_{p=1}^{P}r_p^2
 \label{eq:r}
 \end{align}
-For each $p$, $r_p$ asymptotically follows the standard normal distribution by the central limit theorem. \\
+For each $p$, $r_p$ asymptotically follows the standard normal distribution by the Central Limit Theorem. \\
 
 Now, we acquire a closed-form covariance structure of $r$. First, we begin with a multivariate central limit theorem to write the following in terms of $r$.
 \begin{equation}
@@ -239,15 +167,10 @@ r_{12,p} \\ r_{13, p} \\ \cdots \\ r_{1K,p}
 \label{eq:H}
 \end{equation}
 $H_1$ is a $(K-1) \times (K-1)$ matrix where $(k-1, \ell-1)$th element is $\eta_{1k, 1\ell}$ for $k, \ell = 2, \cdots K$. From (\ref{eq:r}), it is easy to see that $H_1$ has 1 at the diagonals. Also, $\eta_{1k, 1\ell}$ converges in probability to
-\begin{equation} \begin{multlined}
-\frac{(\tau_{23}+2\tau_{12}\tau_{23})(\tau_{12}^2+1)(\tau_{13}^2+1) + \tau_{12}\tau_{13}(6+2(\tau_{12}^2+\tau_{13}^2+\tau_{23}^2))}{(1-{\tau}_{12}^2)(1-{\tau}_{13}^2)\sqrt{(1+{\tau}_{12}^2)(1+{\tau}_{13}^2)}} \\
-- \frac{\tau_{12}(\tau_{13}^2+1)(4\tau_{13}+2\tau_{12}\tau_{23}) + \tau_{13}(\tau_{12}^2+1)(4\tau_{12}+2\tau_{13}\tau_{23})}{(1-{\tau}_{12}^2)(1-{\tau}_{13}^2)\sqrt{(1+{\tau}_{12}^2)(1+{\tau}_{13}^2)}}
-% + \frac{3\tau_{12}^3\tau_{13}^3 + \tau_{12}^3\tau_{13} + \tau_{12}\tau_{13}^3 - 5\tau_{12}\tau_{13}}{(1-{\tau}_{12}^2)(1-{\tau}_{13}^2)\sqrt{(1+{\tau}_{12}^2)(1+{\tau}_{13}^2)}}
-\label{eq:eta}
-\end{multlined} \end{equation}
-where 
-$${\tau}_{k\ell}= \frac{\rho_{k\ell}}{\sqrt{{\rho}_{kk}{\rho}_{\ell\ell}}}. $$
-The derivation is in the Appendix. \\
+\begin{equation}
+\frac{\hat{\rho}_{23} + \hat{\rho}_{12}\hat{\rho}_{13}}{
+\sqrt{(\hat{\sigma}_1^2\hat{\sigma}_2^2 - \hat{\rho}_{12}^2)(\hat{\sigma}_1^2\hat{\sigma}_3^2 - \hat{\rho}_{13}^2)}}
+\label{eq:eta}\end{equation}
 
 Note that $d_1$ can be written as the sum of L2 norm of $\bm{r}_{1,p}$ with a known distribution, 
 \begin{equation}
@@ -291,7 +214,7 @@ The results show that all three methods control the type I error at the nominal 
 Next we generate the data under the alternative hypothesis to compare the statistical power. So we focus on the case of $N=70$ to reflect the sample size of GTEx data. We again draw $X$ from standard normal distribution. Then, for $i = 1, \cdots, N$, we generate $\rho(\bm{x}_i^T\bm{\alpha})$ from hyperbolic tangent function in (\ref{eq:data_generating_fisher}). Given $\rho$, we draw $Y$ from (\ref{eq:framework_2genes}) with varying levels of $\alpha$, 1000 times each. The hyperbolic tangent model places the likelihood ratio test at an advantage because the model is correctly specified, so as a contrasting case, we use a quadratic model to generate $\rho$ as follows,
 
 \begin{align}
-    \rho(\bm{x}_i^T\bm{\alpha}) = (\bm{x}_i^T\bm{\alpha} - 0.1)^2 - 0.99,
+    \rho(\alpha_0 + \bm{x}_i^T\bm{\alpha}) = ( - 0.1 + \bm{x}_i^T\bm{\alpha})^2 - 0.99,
     \label{eq:data_generating2_quadratic}
 \end{align}
 
@@ -366,322 +289,132 @@ We believe the proposed method can be applied to data problems in diverse domain
 \pagebreak
  
 \section*{Appendix A. Derivation of test statistic}
-% We start from the model in (\ref{eq:framework_2genes}). 
-Consider the likelihood in (\ref{eq:likelihood_2genes}).
-\begin{equation}
-\begin{multlined}
-\ell(\bm{\alpha}, \alpha_0, \bm{b}, \bm{\beta}, \rho_{11}, \rho_{22}) 
-% = -\frac{N}{2} log(2\pi) - \frac{1}{2} \sum_{i=1}^{N} log (\sigma_{wi}^2) - \sum_{i=1}^{N} \frac{(w_i - \mu_{wi})^2}{\sigma_{wi}^2}\\
-% \hspace{7mm} -\frac{N}{2} log(2\pi) - \frac{1}{2} \sum_{i=1}^{N} log (\sigma_{vi}^2) - \sum_{i=1}^{N} \frac{(v_i - \mu_{vi})^2}{\sigma_{vi}^2}\\
-= -N log(2\pi) \\ - \frac{1}{2} \sum_{i=1}^{N} log(\sigma_{wi}^2) - \frac{1}{2} \sum_{i=1}^{N} log(\sigma_{vi}^2) - \sum_{i=1}^{N} \frac{u_{wi}^2}{2\sigma_{wi}^2} - \sum_{i=1}^{N} \frac{u_{vi}^2}{2\sigma_{vi}^2}
-\end{multlined}
-    \label{eq:likelihood_2genes_appendix}
-\end{equation}
-% $$\mu_{wi} = \frac{{b}_1}{\sqrt{\rho_{11}}} + \frac{{b}_2}{\sqrt{\rho_{22}}} + \bm{x}_i^T \left(\frac{\bm{\beta}_1}{\sqrt{\rho_{11}}} + \frac{\bm{\beta}_2}{\sqrt{\rho_{22}}}\right), \hspace{6mm} 
-% \mu_{vi} = \frac{{b}_1}{\sqrt{\rho_{11}}} - \frac{{b}_2}{\sqrt{\rho_{22}}} + \bm{x}_i^T \left(\frac{\bm{\beta}_1}{\sqrt{\rho_{11}}} - \frac{\bm{\beta}_2}{\sqrt{\rho_{22}}}\right)$$
-% $$\sigma_{wi}^2 = 2 + \frac{2\rho_{12}(\bm{x}_i^T\bm{\alpha} + \alpha_0)}{\sqrt{\rho_{11}\rho_{22}}}, \hspace{6mm} \sigma_{vi}^2 = 2 - \frac{2\rho_{12}(\bm{x}_i^T\bm{\alpha} + \alpha_0)}{\sqrt{\rho_{11}\rho_{22}}}$$
-
-We compute the first and second derivative of the log likelihood with respect to $\bm{\alpha}$ when all other nuisance parameters are replaced with their respective maximum likelihood estimates. The following results help the computation of the derivative.
+We start from the likelihood of (\ref{eq:framework_2genes}).  
+\begin{equation*}
+    \begin{bmatrix} y_{i1} \\ y_{i2} \end{bmatrix} = 
+    \begin{bmatrix} \bm{z}_i^T\bm{\beta}_1 \\ \bm{z}_i^T \bm{\beta}_2 \end{bmatrix} + \begin{bmatrix} u_{i1} \\ u_{i2} \end{bmatrix}
+\end{equation*}
+\begin{equation*}
+    \begin{bmatrix} u_{i1} \\ u_{i2} \end{bmatrix} \sim \mathcal{N} \left( 
+    \begin{bmatrix} 0 \\0 \end{bmatrix}, \Sigma = \begin{bmatrix} \sigma_1^2 & \rho_{12}(\bm{\tilde{x}}_i^T\bm{\tilde{\alpha}}) \\ \rho_{12}(\bm{\tilde{x}}_i^T\bm{\tilde{\alpha}}) & \sigma_2^2 \end{bmatrix}\right)
+\end{equation*}
+where $\tilde{\bm{\alpha}} = \begin{bmatrix} \alpha_0& \bm{\alpha}^T \end{bmatrix}$, and $\tilde{\bm{x}_i}$ is $\begin{bmatrix} 1 & \bm{x}_i\end{bmatrix}^T$. 
+We compute the first and second derivative of the log likelihood with respect to $\bm{\tilde{\alpha}}$ when all other nuisance parameters are replaced with their respective maximum likelihood estimates. $\bm{\tilde{\alpha}}$ is similarly replaced with $\begin{bmatrix} \hat{\alpha}_0 & \bm{0}\end{bmatrix}^T$ so that $\rho_{12}(\hat{\alpha}_0)$ is equal to $\frac{1}{N} \sum_{i=1}^{N} \hat{u}_{i1}\hat{u}_{i2}$. $\hat{u}_{i1}$ and $\hat{u}_{i2}$ is the OLS residuals of the above regression under the null hypothesis.
+\subsection*{Score function}
+We first derive the first derivative of the log likelihood with respect to $\bm{\alpha}$. We start from differentiating with respect to the variance matrix $\Sigma$. 
+$$\frac{\partial \ell} {\partial \Sigma} =
+-\frac{1}{2} \sum_{i=1}^{N} \left(
+\frac{\partial log|\Sigma|}{\partial \Sigma} + 
+\frac{\partial \bm{u}_i^T \Sigma^{-1}\bm{u}_i}{\partial \Sigma}
+\right)
 $$
-\frac{\partial \sigma_{wi}^2}{\partial \bm{\alpha}} = \frac{2\bm{x}_i \rho_{12}'(\bm{x}_i^T \bm{\alpha} + \alpha_0)}{\sqrt{\rho_{11}\rho_{22}}}, \hspace{5mm}
-\frac{\partial \sigma_{vi}^2}{\partial \bm{\alpha}} = -\frac{2\bm{x}_i \rho_{12}'(\bm{x}_i^T \bm{\alpha} + \alpha_0)}{\sqrt{\rho_{11}\rho_{22}}}
-$$
-$$\frac{\partial \sigma_{wi}^2}{\partial \rho_{11}} = -\frac{\rho_{12}(\bm{x}_i^T\bm{\alpha} + \alpha_0)}{\sqrt{\rho_{11}^3\rho_{22}}} = \frac{1}{\rho_{11}}\left(-\frac{\sigma_{wi}^2}{2} + 1\right)$$
-$$\frac{\partial \sigma_{vi}^2}{\partial \rho_{11}} = \frac{\rho_{12}(\bm{x}_i^T\bm{\alpha} + \alpha_0)}{\sqrt{\rho_{11}^3\rho_{22}}} = \frac{1}{\rho_{11}}\left(\frac{\sigma_{vi}^2}{2} - 1\right)$$
+Here, we use $\rho_{12}$ instead of $\rho_{12}(\bm{x}_i^T\bm{\alpha})$ for notational convenience. Similarly, $\hat{\rho}_{12}$ is used instead of ${\rho}_{12}(\hat{\alpha}_0).$
+The first component is as follows:
+$$\frac{\partial log(|\Sigma|)}{\partial \sigma_1^2}=
+\frac{\sigma_2^2}{\sigma_1^2\sigma_2^2 - \rho_{12}^2}, \hspace{4mm}
+\frac{\partial log(|\Sigma|)}{\partial \sigma_2^2} = \frac{\sigma_1^2}{\sigma_1^2\sigma_2^2 - \rho_{12}^2}, \hspace{4mm}
+\frac{\partial log(|\Sigma|)}{\partial \alpha} =  \frac{-2\rho_{12}\rho_{12}'}{\sigma_1^2\sigma_2^2 - \rho_{12}^2}x_i$$
 
-% \noindent We additionally define $\hat{u}_{wi}^2$ and $\hat{v}_{wi}^2$ as $(w_i - \hat{\mu}_{wi})^2$ and $(v_i-\hat{\mu}_{vi})^2$ respectively, where $\hat{\mu}_{wi}$ and $\hat{\mu}_{vi}$ are $\mu_{wi}$ and $\mu_{vi}$ with $\bm{b}$ and $\bm{\beta}$ replaced with $\hat{\bm{b}}$ and $\hat{\bm{\beta}}$.\\
-
-\noindent The maximum likelihood estimates for $\sigma_{wi}^2$ and $\sigma_{vi}^2$ are as follows.
-$$\hat{\sigma}_{wi}^2 = \frac{1}{N} \sum_{i=1}^{N} \hat{u}_{wi}^2, \hspace{5mm} 
-\hat{\sigma}_{wi}^2 = \frac{1}{N} \sum_{i=1}^{N} \hat{u}_{vi}^2$$
-Then, the first derivative of the likelihood (\ref{eq:likelihood_2genes_appendix}) with respect to the parameter of interest $\bm{\alpha}$ is
-\begin{equation}
-    \begin{multlined}
-    \bm{d}_{\bm{\alpha}} = \frac{\partial \ell}{\partial \bm{\alpha}} = - \sum_{i=1}^{N} \frac{1}{2\sigma_{wi}^2} \cdot \frac{\partial \sigma_{wi}^2}{\partial \bm{\alpha}} - \sum_{i=1}^{N} \frac{-(w_i - \mu_{wi})^2}{2\sigma_{wi}^4} \frac{\partial \sigma_{wi}^2}{\partial \bm{\alpha}}\\
-    - \sum_{i=1}^{N} \frac{1}{2\sigma_{vi}^2} \cdot \frac{\partial \sigma_{vi}^2}{\partial \bm{\alpha}} - \sum_{i=1}^{N} \frac{-(v_i - \mu_{vi})^2}{2\sigma_{vi}^4} \frac{\partial \sigma_{vi}^2}{\partial \bm{\alpha}}\\
-    =-\frac{1}{\sqrt{\rho_{11}\rho_{22}}} \sum_{i=1}^{N} \bm{x}_i \rho_{12}'(\bm{x}_i^T\bm{\alpha} + \alpha_0) \cdot \left(
-    \frac{1}{\sigma_{wi}^2} - \frac{u_{wi}^2}{\sigma_{wi}^4} 
-    - \frac{1}{\sigma_{vi}^2} + \frac{u_{vi}^2}{\sigma_{vi}^4}
-    \right)\\
-    = -\frac{1}{\sqrt{\rho_{11}\rho_{22}}} \sum_{i=1}^{N} \bm{x}_i\rho_{12}'(\bm{x}_i^T \bm{\alpha}+\alpha_0) \cdot 
-    \left(
-    \frac{1}{\sigma_{wi}^2} \left( 1 - \frac{u_{wi}^2}{\sigma_{wi}^2}\right) - 
-    \frac{1}{\sigma_{vi}^2} \left( 1 - \frac{u_{vi}^2}{\sigma_{vi}^2} \right)
-    \right).
-    \end{multlined}
-\end{equation}
-\noindent Plugging in $\bm{0}$ for $\bm{\alpha}$ and maximum likelihood estimators for all nuisance parameters, we get the score function as below. 
-\begin{equation}
-    \begin{multlined}
-    \bm{\tilde{d}}_{\bm{\alpha}} = \bm{d}_{\bm{\alpha}}\mid_{\bm{\alpha}=\bm{0}, \alpha_0 = \hat{\alpha}_0, \bm{b} = \bm{\hat{b}},\bm{\beta} = \bm{\hat{\beta}}, {\rho}_{11} = {\bm{\hat{\rho}}_{11}},
-    {\rho}_{22} = {\bm{\hat{\rho}}_{22}}}\\
-    = -\frac{\rho_{12}'(\hat{\alpha}_0)}{\sqrt{\rho_{11}\rho_{22}}} \sum_{i=1}^{N} \frac{\bm{x}_i}{\hat{\sigma}_{w}^2} - \frac{\bm{x}_i}{\hat{\sigma}_{v}^2} - \frac{\bm{x}_i \hat{u}_{wi}^2}{\hat{\sigma}_{wi}^4} + \frac{\bm{x}_i \hat{u}_{v}^2}{\hat{\sigma}_{v}^4}\\
-    = -\frac{\rho_{12}'(\hat{\alpha}_0)}{\sqrt{\rho_{11}\rho_{22}}} \sum_{i=1}^{N} \left(
-    \frac{\bm{x}_i}{\hat{\sigma}_{w}^2}
-    \left( 1-\frac{\hat{u}_{wi}^2}{\hat{\sigma}_{w}^2}\right) - 
-    \frac{\bm{x}_i}{\hat{\sigma}_{v}^2}
-    \left( 1-\frac{\hat{u}_{vi}^2}{\hat{\sigma}_{v}^2}\right) 
-    \right)
-    \end{multlined}
-\end{equation}
-
-% \begin{align*}
-% \bm{d}_{\bm{\alpha}} &= \frac{\partial \ell}{\partial \bm{\alpha}}\\
-% &= -\frac{1}{2} \sum_{i=1}^{N}  \frac{2\rho'(\bm{x}_i^T \bm{\alpha})\bm{x}_i}{\sigma_{wi}^2} \left(
-% 1 - \frac{u_{wi}^2}{\sigma_{wi}^2} 
-% \right) + \frac{1}{2} \sum_{i=1}^{N}\frac{2\rho'(\bm{x}_i^T \bm{\alpha})\bm{x}_i}{\sigma_{vi}^2} \left(
-% 1 - \frac{u_{vi}^2}{\sigma_{vi}^2}\right).
+For the second component, we first compute the following:
+\begin{align*}
+\bm{u}_i^T\Sigma^{-1}\bm{u}_i &= \frac{1}{\sigma_1^2 \sigma_2^2 - \rho_{12}^2}\begin{bmatrix}u_1 & u_2 \end{bmatrix}  \begin{bmatrix} \sigma_2^2 & -\rho_{12} \\ -\rho_{12} & \sigma_1^2 \end{bmatrix}  \begin{bmatrix}u_1\\ u_2 \end{bmatrix}\\
+% &= \frac{1}{\sigma_1^2 \sigma_2^2 - \rho_{12}^2} \begin{bmatrix} u_1 \sigma_2^2 - u_2 \rho_{12} & -u_1\rho_{12} + u_2\sigma_1^2 \end{bmatrix} \begin{bmatrix} u_1 \\ u_2 \end{bmatrix} \\
+% 	&= \frac{1}{\sigma_1^2\sigma_2^2 - \rho_{12}^2} \left(
+% 	u_1^2\sigma_2^2 - u_1u_2\rho_{12} - u_1u_2\rho_{12} + u_2^2\sigma_1^2
+% 	\right)\\
+	&= \frac{1}{\sigma_1^2\sigma_2^2 - \rho_{12}^2} ( u_1^2\sigma_2^2 + u_2^2\sigma_1^2 - 2u_1u_2\rho_{12})
+\end{align*}
+Then, we can get the second component as follows,
+\begin{align*} \frac{\partial u^T \Sigma^{-1}u}{\partial \sigma_1^2}
+&= 
+\sum_{i=1}^{N}\frac{
+	u_{i2}^2(\sigma_1^2\sigma_2^2 - \rho_{12}^2) - (u_{i2}^2\sigma_1^2 + u_{i1}^2\sigma_2^2 - 2u_{i1}u_{i2}\rho_{12})\sigma_2^2
+}{
+	(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2
+}\\
+  \frac{\partial u^T \Sigma^{-1}u}{\partial \sigma_2^2}
+  &= 
+\sum_{i=1}^{N} \frac{
+ u_{i1}^2(\sigma_1^2\sigma_2^2 - \rho_{12}^2) - (u_{i2}^2\sigma_1^2 + u_{i1}^2\sigma_2^2 - 2u_{i1}u_{i2}\rho_{12})\sigma_1^2
+ }{
+ (\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2
+ }\\
+   \frac{\partial u^T \Sigma^{-1}u}{\partial \alpha}
+  &= 
+ \sum_{i=1}^{N}\frac{-2u_{i1}u_{i2}\rho_{12}'(\sigma_1^2\sigma_2^2 - \rho_{12}^2) - (u_{i2}^2\sigma_1^2 + u_{i1}^2\sigma_2^2 - 2u_{i1}u_{i2}\rho_{12})(-2\rho_{12})(\rho_{12}')
+ }{
+ (\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2
+ }\bm{x}_i\\
 % \end{align*}
+% \begin{align*}
+%   \frac{\partial u^T \Sigma^{-1}u}{\partial \alpha}
+%   &= 
+%  \sum_{i=1}^{N}\frac{-2u_{i1}u_{i2}\rho_{12}'(\sigma_1^2\sigma_2^2 - \rho_{12}^2) - (u_{i2}^2\sigma_1^2 + u_{i1}^2\sigma_2^2 - 2u_{i1}u_{i2}\rho_{12})(-2\rho_{12})(\rho_{12}')
+%  }{
+%  (\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2
+%  }\bm{x}_i\\
+%  &= \sum_{i=1}^{N} \frac{u_{i1}u_{i2}x_i(-2\rho_{12}'(\sigma_1^2\sigma_2^2 - \rho_{12}^2) - 4\rho_{12}^2\rho_{12}') + 4\sigma_1^2\sigma_2^2x_i\rho_{12}\rho_{12}'}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}\\
+%  &= \sum_{i=1}^{N} \frac{4\sigma_1^2\sigma_2^2\rho_{12}\rho_{12}' - u_{i1}u_{i2}\rho_{12}'(2\sigma_1^2\sigma_2^2 - 2\rho_{12}^2)}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}x_i\\
+ &= \sum_{i=1}^{N} \rho_{12}' \frac{4\sigma_1^2\sigma_2^2\rho_{12} - 2u_{i1}u_{i2}(\sigma_1^2\sigma_2^2 - \rho_{12}^2)}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}
+ \end{align*}
+ 
+ Plugging in the MLEs for each nuisance parameter, we can replace $\sigma_1^2$ with $\hat{\rho}_{11} = \sum_{i=1}^{N} u_{2i}^2$ and $\sigma_2^2$ with $\hat{\rho}_{22} = \sum_{i=1}^{N} \hat{u}_{i2}^2$. We also replace $\bm{\alpha}$ with $\bm{0}$ as specified in $H_0$, and $\rho_{12}(\hat{\alpha}_0)$ is equal to $\sum_{i=1}^{N} \hat{u}_{i1}\hat{u}_{i2}$. 
 
-%  Now, we replace $\bm{\beta}$ and $\bm{\alpha}$ with the maximum likelihood estimators under the null hypothesis. $\bm{\beta}$ is therefore replaced by the OLS estimators, and $\bm{\alpha}$ is 0. Moreover, the MLE for
-% $2 + 2\rho(\bm{0}) = \hat{\sigma}_w^2$ and MLE for $2-2\rho(\bm{0}) = \hat{\sigma}_v^2$. 
+\begin{align*}
+    \tilde{d}_{\sigma_1^2} = \sum_{i=1}^{N} \hat{\rho}_{12}' \frac{(\hat{\sigma}_1^2\hat{\sigma}_2^2 + \hat{\rho}_{12}^2)(\hat{u}_{i1}\hat{u}_{i2} - \hat{\rho}_{12})}{(\hat{\sigma}_1^2\hat{\sigma}_2^2 - \hat{\rho}_{12}^2)^2}\bm{\tilde{x}}_i
+    % &= -\frac{1}{2}\frac{\partial log(|\Sigma|)}{\partial \sigma_1^2}\mid_{H_0} + \frac{\partial u^T \Sigma^{-1}u}{\sigma_1^2}\mid_{H_0}\\ 
+    % &= \frac{\hat{\rho}_{22}(\hat{\rho}_{11}\hat{\rho}_{22} - {\rho}_{12}(\hat{\alpha}_0)^2) + \sum_{i=1}^{N} \hat{u}_{i2}^2(\hat{\rho}_{11}\hat{\rho}_{22} - {\rho}_{12}(\hat{\alpha}_0)^2) - (\hat{u}_{i2}^2\hat{\rho}_{11} + \hat{u}_{i1}^2\hat{\rho}_{22} - 2\hat{u}_{i1}\hat{u}_{i2}\rho_{12}(\hat{\alpha}_0))\sigma_2^2}{(\hat{\rho}_{11}\hat{\rho}_{22} - \rho_{12}^2)^2}\\
+    % & = 0\\
+    % \tilde{d}_{\sigma_2^2} &= 0\\
+    % \tilde{d}_{\alpha} &= -\frac{1}{2}
+    % \sum_{i=1}^{N} \rho_{12}' \frac{4\sigma_1^2\sigma_2^2\rho_{12} - 2\hat{u}_{i1}\hat{u}_{i2}(\sigma_1^2\sigma_2^2 + \rho_{12}^2) - 2\rho_{12}(\sigma_1^2\rho_{12} - \rho_{12}^2)}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}x_i\\
+    % &= -\frac{1}{2}\sum_{i=1}^{2}\rho_{12}' \frac{2\sigma_1^2\sigma_2^2\rho_{12} + 2\rho_{12}^3 - 2\hat{u}_{i1}\hat{u}_{i2}(\sigma_1^2 + \sigma_2^2 + \rho_{12}^2)}{(\sigma_1^2\sigma_2^2- \rho_{12}^^2)^2}\\
+    % &= -\frac{1}{2} \sum_{i=1}^{N} \rho_{12}' \frac{2(\sigma_1^2\sigma_2^2 + \rho_{12}^2)(\rho_{12} - \hat{u}_{i1}\hat{u}_{i2})}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}\\
+    % &= \sum_{i=1}^{N} \rho_{12}' \frac{(\sigma_1^2\sigma_2^2 + \rho_{12}^2)(\hat{u}_{i1}\hat{u}_{i2} - \rho_{12})}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}\bm{x}_i
+\end{align*}
+where $\hat{\rho}_{12}' = \rho_{12}'(\hat{\alpha}_0)$. Ultimately, the first two entries of the score vector that corresponds to the variance parameters $\sigma_1^2$ and $\sigma_2^2$ become zero, and only the entries related to the parameter of interest ($\bm{\tilde{\alpha}}$) are relevant. 
+
+
+\subsection*{Fisher Information}
+Again, we start from the second derivative of the entire variance matrix $\Sigma$ with three parameters $\sigma_1^2$, $\sigma_2^2$, and $\tilde{\bm{\alpha}}$. We use the property
+$$\mathcal{I}(\Sigma)_{m,n}= \frac{1}{2} tr\left(  \Sigma^{-1}\frac{\partial \ell}{\partial \Sigma}_m \Sigma^{-1} \frac{\partial \ell}{\partial \Sigma}_n\right)$$
+Then, we get the following for each element of $\mathcal{I}(\Sigma)$:
+\begin{align*}
+    \mathcal{I}(\Sigma)_{\sigma_1^2 \sigma_1^2} &=
+    \frac{1}{2} \frac{\sigma_2^4}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}\\
+    \mathcal{I}(\Sigma)_{\sigma_2^2\sigma_2^2} &=
+    \frac{1}{2} \frac{\sigma_1^4}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}\\
+    \mathcal{I}(\Sigma)_{\tilde{\bm{\alpha}}\tilde{\bm{\alpha}}}& = 2\sum_{i=1}^{N} \bm{\tilde{x}}_i \bm{\tilde{x}}_i^T \frac{\rho_{12}^2 \rho_{12}'^2 + \sigma_1^2\sigma_2^2\rho_{12}'^2}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}\\
+    \mathcal{I}(\theta)_{\sigma_1^2\sigma_2^2} &=-\frac{\rho_{12} \rho_{12}'\sigma_2^2}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}\bm{\tilde{x}}_i\\
+    \mathcal{I}(\theta)_{\sigma_1^2\bm{\tilde{\alpha}}} &= -\frac{\rho_{12} \rho_{12}'\sigma_1^2}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}\bm{\tilde{x}}_i
+\end{align*}
+Finally, putting them altogether ,
+\begin{equation*}
+\mathcal{I}(\sigma_1^2, \sigma_2^2, \bm{\tilde{\alpha}}) = -\frac{1}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}\begin{bmatrix}
+\frac{1}{2} \sigma_2^4 & \frac{1}{2} \rho_{12}^2 & -\rho_{12}\rho_{12}'\sigma_2^2 \bm{\tilde{x}}_i^T\\
+\frac{1}{2} \rho_{12}^2 & \frac{1}{2} \sigma_1^4 & -\rho_{12} \rho_{12}'\sigma_1^2 \bm{\tilde{x}}_i^T \\
+-\rho_{12} \rho_{12}'\sigma_2^2 \bm{\tilde{x}}_i & -\rho_{12} \rho_{12}'\sigma_1^2\bm{\tilde{x}}_i &  (\rho_{12}^2 \rho_{12}'^2 + \sigma_1^2\sigma_2^2 \rho_{12}'^2)\bm{\tilde{x}}_i \bm{\tilde{x}}_i^T
+\end{bmatrix}
+\end{equation*}
+
+Consider the above Fisher Information matrix as a block matrix. Since the first two entries of the score vector are zeros, we only need the bottom right block of the inverted $\mathcal{I}$. After plugging in the MLEs, it turns out to be
+$$\tilde{\mathcal{I}}_{\bm{\tilde{\alpha}}\bm{\tilde{\alpha}}}^{-1} = \frac{(\sigma_1^2\sigma_2^2-\rho_{12}^2)^4}{\rho_{12}'^2(\sigma_1^2\sigma_2^2+\rho_{12}^2)}(\bm{x}_i\bm{x}_i^T)^{-1}$$
+% The inverse of $\mathcal{I}$
 % \begin{equation}
-%     \begin{multlined}
-% \bm{\tilde{d}_{\alpha}} = \bm{d}_{\bm{\alpha}}\mid_{\bm{\alpha}=\bm{0}, \bm{\beta} = \bm{\hat{\beta}}_{\text{MLE}}} \\
-% = -\frac{1}{2} \sum_i \left(
-% \frac{2\rho'(0)\bm{x}_i}{\hat{\sigma}_{w}^2} \left(
-% 1-\frac{\hat{u}_{wi}^2}{\hat{\sigma}_{w}^2}
-% \right)
-% -
-% \frac{2\rho'(0)\bm{x}_i}{\hat{\sigma}_{v}^2} \left(
-% 1-\frac{\hat{u}_{vi}^2}{\hat{\sigma}_{v}^2}
-% \right)
-% \right)\\
-% = -\rho'(0) \sum_i  \left(
-% \frac{\bm{x}_i}{\hat{\sigma}_{w}^2} \left(
-% 1-\frac{\hat{u}_{wi}^2}{\hat{\sigma}_{w}^2}
-% \right)
-% -
-% \frac{\bm{x}_i}{\hat{\sigma}_{v}^2} \left(
-% 1-\frac{\hat{u}_{vi}^2 }{\hat{\sigma}_{v}^2}
-% \right)
-% \right)
-% \label{first_derivative}
-% \end{multlined}
+%   \mathcal{I}^{-1} = \begin{bmatrix}
+%     2\rho_{11^2} & 2\rho_{12}^2 & 2\frac{\sigma_1^2\rho_{12}}{\rho_{12}'}\bm{x}_i^T\\
+%     2\rho_{12}^2 & 2\sigma_2^2^2 & 2\frac{\sigma_2^2\rho_{12}}{\rho_{12}'}\bm{x}_i^T\\
+%     2\frac{\sigma_1^2\rho_{12}}{\rho_{12}'}\bm{x}_i & 2\frac{\sigma_2^2\rho_{12}}{\rho_{12}'}\bm{x}_i & \frac{\sigma_1^2\sigma_2^2+\rho_{12}^2}{\rho_{12}'^2}(\bm{x}_i\bm{x}_i^T)^{-1}
+%     \end{bmatrix}
 % \end{equation}
-\noindent The second derivative is
-\begin{equation}
-    \begin{multlined}
-    \frac{\partial^2 \ell}{\partial \bm{\alpha} \partial \bm{\alpha}^T}\\
-    = \sum_{i=1}^{N} \frac{\bm{x}_i \bm{x}_i^T \rho_{12}''(\bm{x}_i^T\bm{\alpha}+\alpha_0)}{\sqrt{\rho_{11}\rho_{22}}} \cdot
-    \left(
-    \frac{1}{\sigma_{wi}^2} \left( 1 - \frac{u_{wi}^2}{\sigma_{wi}^2}\right) - 
-    \frac{1}{\sigma_{vi}^2} \left( 1 - \frac{u_{vi}^2}{\sigma_{vi}^2} \right)
-    \right)\\
-    + \frac{2\bm{x}_i \bm{x}_i^T {\rho_{12}'}^2(\bm{x}_i^T\bm{\alpha} + \alpha_0)}{\rho_{11}\rho_{22}}
-    \left(
-    -\frac{1}{\sigma_{wi}^4} + \frac{2u_{wi}^2}{\sigma_{wi}^6} +
-    -\frac{1}{\sigma_{vi}^4} + \frac{2u_{vi}^2}{\sigma_{vi}^6}
-    \right)\\
-    = \sum_{i=1}^{N} \frac{\bm{x}_i \bm{x}_i^T \rho_{12}''(\bm{x}_i^T\bm{\alpha}+\alpha_0)}{\sqrt{\rho_{11}\rho_{22}}} \cdot
-    \left(
-    \frac{1}{\sigma_{wi}^2} \left( 1 - \frac{u_{wi}^2}{\sigma_{wi}^2}\right) - 
-    \frac{1}{\sigma_{vi}^2} \left( 1 - \frac{u_{vi}^2}{\sigma_{vi}^2} \right)
-    \right)\\
-    - \frac{2\bm{x}_i \bm{x}_i^T {\rho_{12}'}^2(\bm{x}_i^T\bm{\alpha}+\alpha_0)}{\rho_{11}\rho_{22}}
-    \left(
-    \frac{1}{\sigma_{wi}^4} \left(1-\frac{2u_{wi}^2}{\sigma_{wi}^2}\right)+
-    \frac{1}{\sigma_{vi}^4} \left(1-\frac{2u_{vi}^2}{\sigma_{vi}^2}\right)
-    \right).
-    \end{multlined}
-\end{equation}
-We acquire the Fisher Information matrix by taking an expectation:
-\begin{equation}
-    \mathcal{I}_{\bm{\alpha}\bm{\alpha}^T} = E\left(\frac{\partial^2 \ell}{\partial \bm{\alpha} \partial \bm{\alpha}^T}\right)\\
-    = \sum_{i=1}^{N} \frac{2\bm{x}_i \bm{x}_i^T {\rho '}^2_{12}(\bm{x}_i^T\bm{\alpha}+\alpha_0)}{\rho_{11}\rho_{22}} \left(
-    \frac{1}{\sigma_{wi}^4} + \frac{1}{\sigma_{vi}^4}
-    \right).
-\end{equation}
-
-\noindent Then we plug in the maximum likelihood estimates as follows.
-\begin{equation}
-\begin{multlined}
-        \tilde{\mathcal{I}}_{\bm{\alpha}\bm{\alpha}^T} = \mathcal{I}_{\bm{\alpha}\bm{\alpha}^T}\mid_{
-        \bm{\alpha}=\bm{0}, 
-        \alpha_0 = \hat{\alpha}_0,
-        \bm{b} = \bm{\hat{b}},
-        \bm{\beta} = \bm{\hat{\beta}},
-        {\rho}_{11} = \bm{\hat{\rho}}_{11},
-        {\rho}_{22} = \bm{\hat{\rho}}_{22}}\\
-        = \frac{{\rho '}^2_{12}({\hat{\alpha}_0})}{2\hat{\rho}_{11}\hat{\rho}_{22}} \left(\frac{1}{\hat{\sigma}_{w}^4} + \frac{1}{\hat{\sigma}_{v}^4} \right) \sum_{i=1}^{N} \bm{x}_i \bm{x}_i^T
-    \end{multlined}
-\end{equation}
-
-\noindent Additionally, we can see that $\tilde{\mathcal{I}}_{\bm{\alpha}{\bm{\beta}_1^T}} =  \tilde{\mathcal{I}}_{\bm{\alpha}{\bm{\beta}_2^T}} = \bm{0}$
-\begin{equation}
-\frac{\partial \ell}{\partial \bm{\alpha} \partial\bm{\beta}_1}= 
-    % {\mathcal{I}}_{\bm{\alpha}{\bm{\beta}_1^T}} =
-    \frac{1}{\sqrt{\rho_{11}\rho_{22}}} \sum_i \bm{x}_i \bm{x}_i^T \rho_{12}(\bm{x}_i^T\bm{\alpha} + \alpha_0) \left( 
-    \frac{u_{wi}}{\sqrt{\rho_{11}}\sigma_{wi}^4} + \frac{u_{vi}}{\sqrt{\rho_{11}}\sigma_{vi}^4}
-    \right)
-\end{equation}
-$$
-\tilde{\mathcal{I}}_{\bm{\alpha}{\bm{\beta}_1^T}} = 
-\frac{\rho_{12}(\hat{\alpha}_0)}{\sqrt{\hat{\rho}_{11}^3\hat{\rho}_{22}}} \left(
-\frac{1}{\hat{\sigma}_{wi}^4}
-E\left( \sum_{i=1}^{n} \bm{x}_i \bm{x}_i^T \hat{u}_{wi}\right)
-+\frac{1}{\hat{\sigma}_{vi}^4}
-E\left( \sum_{i=1}^{n} \bm{x}_i \bm{x}_i^T \hat{u}_{vi} \right)
-\right) = \bm{0}$$
-
-% \noindent $\tilde{\mathcal{I}}_{\bm{\alpha}\bm{\rho}_{11}}$ is
-% \begin{equation}
-%     \begin{multlined}
-%     \frac{\partial \ell}{\partial \bm{\alpha}\partial\rho_{11}} = \\
-%      \sum_{i=1}^{N} -\frac{\bm{x}_i \rho'_{12}(\bm{x}_i^T \bm{\alpha}+\alpha_0)}{2\sqrt{\rho_{11}^3\rho_{22}}} \left( \frac{1}{\sigma_{wi}^2}\left( 1-\frac{u_{wi}^2}{\sigma_{wi}^2} \right) - 
-%      \frac{1}{\sigma_{vi}^2} \left( 1-\frac{u_{vi}^2}{\sigma_{vi}^2}\right) \right)\\
-%      + \frac{\bm{x}_i \rho_{12}(\bm{x}_i^T\bm{\alpha} + \alpha_0) \rho_{12}'(\bm{x}_i^T \bm{\alpha} + \alpha_0)}{2\rho_{11}^2 \rho_{22}}\left( \frac{1}{\sigma_{wi}^4}\left( 1-\frac{u_{wi}^2}{2\sigma_{wi}^2} \right) - 
-%      \frac{1}{\sigma_{vi}^4} \left( 1-\frac{u_{vi}^2}{2\sigma_{vi}^2}\right) \right).
-%     \end{multlined}
-% \end{equation}
-
-\noindent Next, we compute $\tilde{\mathcal{I}}_{\bm{\alpha}\bm{\rho}_{11}}$.
-\begin{equation}
-    \begin{multlined}
-    \frac{\partial \ell}{\partial \bm{\alpha}\partial\rho_{11}} = \\
-    \frac{1}{2\sqrt{\rho_{11}^3\rho_{22}}} \sum_{i=1}^{N} \bm{x}_i \rho_{12}'(\bm{x}_i^T\bm{\alpha}+\alpha_0) (A-B)\\
-    - \frac{1}{\sqrt{\rho_{11}\rho_{22}}} \sum_{i=1}^{N} \bm{x}_i \rho_{12}'(\bm{x}_i^T\bm{\alpha} + \alpha_0) \left( \frac{\partial A}{\partial \rho_{11}} - \frac{\partial B}{\partial \rho_{11}}\right)
-    \end{multlined}
-    \end{equation}
-where $A = \frac{1}{\sigma_{wi}^2} \left( 1 - \frac{u_{wi}^2}{\sigma_{wi}^2}\right)$ and $B = \frac{1}{\sigma_{vi}^2} \left( 1-\frac{u_{vi}^2}{\sigma_{vi}^2}\right)$. The first term is zero under the null with nuisance parameters replaced with MLEs. After some computation,
-$$\frac{\partial A}{\partial \rho_{11}} =  \frac{1}{(\sigma_{wi}^2)^2\rho_{11}},\hspace{6mm}
-\frac{\partial B}{\partial \rho_{11}} =  \frac{1}{(\sigma_{vi}^2)^2\rho_{11}}$$
-Under the null with nuisance parameters replaced with MLEs,
-$$\tilde{\mathcal{I}}_{\bm{\alpha}\rho_{11}} = 
--\frac{\rho_{12}'(\hat{\alpha}_0)}{\sqrt{\hat{\rho}_{11}^3\hat{\rho}_{22}}} \left(\frac{1}{\hat{\sigma}_w^4} - \frac{1}{\hat{\sigma}_v^4} \right)\sum_{i=1}^{N} \bm{x}_i 
-,
-$$
-which is $\bm{0}$ under the small condition that the covariates are centered so that $\sum_{i=1}^{N}\bm{x}_i = \bm{0}$. $\tilde{\mathcal{I}}_{\bm{\alpha}\rho_{22}}$ is similar due to symmetry.\\
-
-
-
-
-%%%%%%% DETAILED DERIVATION OF $\frac{\partial A}{\partial \rho_{11}}$ %%%%%
-%%%%%%% DO NOT DELETE %%%%%%
-% The first term above is zero under the null with nuisance parameters replaced with MLEs. For the second term, we first compute $\frac{\partial A}{\partial \rho_{11}}:$
-% $$\frac{\frac{\partial \sigma_{wi}^2}{\partial \rho_{11}}}{(\sigma_{wi}^2)^2} \left( 1 - \frac{u_{wi}^2}{\sigma_{wi}^2} \right) + \frac{1}{\sigma_{wi}^2} \left(
-% -\frac{2u_{wi} \frac{\partial u_{wi}}{\partial \rho_{11}} \sigma_{wi}^2 - u_{wi}^2 \frac{\partial \sigma_{wi}^2}{\partial \rho_{11}}}{(\sigma_{wi}^2)^2}
-% \right)$$
-% The first term becomes zero under the null with MLEs of nuisance parameters. The second term can be re-written as
-% $$
-% -\frac{-\frac{u_{1i}^2}{\rho_{11}} - \frac{u_{1i}u_{2i}}{\sqrt{\rho_{11}\rho_{22}}}}{(\sigma_{wi}^2)^2\rho_{11}}
-% - \frac{\frac{\rho_{12}(\bm{x}_i^T\bm{\alpha} + \alpha_0)}{\sqrt{\rho_{11}\rho_{22}}} \cdot u_{wi}^2}{(\sigma_{wi}^2)^3\rho_{11}}
-% $$
-
-% \noindent Taking expectation,
-% $$\frac{1}{(\sigma_{wi}^2)^2\rho_{11}} + \frac{\frac{\rho_{12}(\bm{x}_i^T\bm{\alpha} + \alpha_0)}{\sqrt{\rho_{11}\rho_{22}}}}{(\sigma_{wi}^2)^2\rho_{11}}  - \frac{\frac{\rho_{12}(\bm{x}_i^T\bm{\alpha} + \alpha_0)}{\sqrt{\rho_{11}\rho_{22}}}}{(\sigma_{wi}^2)^2\rho_{11}}$$
-% $$= \frac{1}{(\sigma_{wi}^2)^2\rho_{11}} $$
-
-% \noindent Plugging in the MLEs of the nuisance parameters,
-% $$\frac{1}{\hat{\sigma}_w^4\hat{\rho}_{11}}$$
-
-% Going back to the original expression,
-% $$E\left(\frac{\partial \ell}{\partial \bm{\alpha} \partial \rho_{11}}\right)\mid_{
-%         \bm{\alpha}=\bm{0}, 
-%         \alpha_0 = \hat{\alpha}_0,
-%         \bm{b} = \bm{\hat{b}},
-%         \bm{\beta} = \bm{\hat{\beta}},
-%         {\rho}_{11} = \bm{\hat{\rho}}_{11},
-%         {\rho}_{22} = \bm{\hat{\rho}}_{22}} =\tilde{\mathcal{I}}_{\bm{\alpha}\bm{\rho}_{11}}$$
-% $$= \frac{\rho_{12}'(\hat{\alpha}_0)}{2\sqrt{\hat{\rho}_{11}^3\hat{\rho}_{22}}} \sum_i \bm{x}_i \left( 1 - \frac{E(\hat{u}_{wi}^2)}{\hat{\sigma}_{w}^2} - 1 + \frac{E(\hat{u}_{vi}^2)}{\hat{\sigma}_{v}^2} \right)
-% $$
-% $$- \frac{\rho_{12}'(\hat{\alpha}_0)}{\sqrt{\hat{\rho}_{11}^3\hat{\rho}_{22}}}
-% \sum_i \bm{x}_i \left( \frac{1}{\hat{\sigma}_w^4\hat{\rho}_{11}} + \frac{1}{\hat{\sigma}_v^4 \hat{\rho}_{22}} \right)
-% $$
-% $$=-\frac{\rho_{12}'(\hat{\alpha}_0)}{\sqrt{\rho_{11}^3 \rho_{22}}} \sum_{i=1}^{N} \bm{x}_i \left( \frac{1}{\hat{\sigma}_w^2}\left( \frac{3}{\hat{\sigma}_w^2} - \frac{1}{2} \right) - \frac{3}{\hat{\sigma}_v^2} \left( \frac{1}{\hat{\sigma}_v^2} - \frac{1}{2} \right) \right)$$
-% and $\tilde{\mathcal{I}}_{\bm{\alpha}\bm{\rho}_{22}}$ is similar. We can see that above equals to zero under a small condition that the covariates are centered. The centering of covariates plays no role in inference. \\
 
 \noindent Finally, we get our score statistic
-\begin{equation}
-    \begin{multlined}
-    q = \tilde{d}_{\bm{\alpha}}^T \tilde{I}_{\bm{\alpha}\bm{\alpha}^T}^{-1}
-    \tilde{d}_{\bm{\alpha}}
-    =\frac{1}{2}\left( \frac{1}{\hat{\sigma}_w^4}+\frac{1}{\hat{\sigma}_v^4}\right)^{-1}
-\left(\sum_{i=1}^{N} \bm{x}_{i} 
-\left(
-\frac{\hat{\sigma}_w^2-\hat{u}_{wi}^2}{\hat{\sigma}_w^4}- \frac{\hat{\sigma}_v^2-\hat{u}_{vi}^2}{\hat{\sigma}_v^4}
-\right)
-\right)^T \\
-\left( \sum_{i=1}^{N} \bm{x}_i^T \bm{x}_i \right)^{-1}
-\left(
-\sum_{i=1}^{N} \bm{x}_{i} 
-\left(
-\frac{\hat{\sigma}_w^2-\hat{u}_{wi}^2}{\hat{\sigma}_w^4}- \frac{\hat{\sigma}_v^2-\hat{u}_{vi}^2}{\hat{\sigma}_v^4}
-\right)
-\right)
-    \end{multlined}
-\end{equation}
+$$
+    q_{12} = \frac{1}{N(\hat{\sigma}_1^2\hat{\sigma}_2^2+\hat{\rho}_{12}^2)}\sum_{i=1}^{N} (\hat{u}_{i1}\hat{u}_{i2}-\hat{\rho}_{12})\bm{\tilde{x}}_i^T (\sum_{i=1}^{N}\bm{\tilde{x}}_i \bm{\tilde{x}}_i^T)^{-1}
+    \sum_{i=1}^{N} (\hat{u}_{i1}\hat{u}_{i2}-\hat{\rho}_{12})\bm{\tilde{x}}_i
+$$
 
-
-\section*{Appendix B. Derivation of $\eta_{12,13}$}
-We start from the test statistic $q$ computed when the covariates have been orthogonalized.
-$$q = \sum_{p=1}^{P}
- \left(\frac{1}{\sqrt{N}}
- \sqrt{\frac{\hat{\sigma}_w^4 \hat{\sigma}_v^4}{\hat{\sigma}_w^4 + \hat{\sigma}_v^4}}
- \sum_{i=1}^{N} x_{ip} \left( \frac{\hat{\sigma}_w^2 - \hat{u}_{wi}^2}{\hat{\sigma}_w^4}
- - \frac{\hat{\sigma}_v^2 - \hat{u}_{vi}^2}{\hat{\sigma}_v^4}
- \right)
-\right)^2 = \sum_{p=1}^{P}r_p^2$$
-$r_p$ for each $p$ follows standard normal distribution by the central limit theorem. 
-$$E\left(x_{ip}\left( \frac{\hat{\sigma}_w^2 - \hat{u}_{wi}^2}{\hat{\sigma}_w^4}
- - \frac{\hat{\sigma}_v^2 - \hat{u}_{vi}^2}{\hat{\sigma}_v^4}
- \right)\right) = x_{ip} E\left( \frac{\hat{\sigma}_w^2 - \hat{u}_{wi}^2}{\hat{\sigma}_w^4} \right) E\left( \frac{\hat{\sigma}_v^2 - \hat{u}_{vi}^2}{\hat{\sigma}_v^4}
- \right) = 0$$
-$$Var\left(x_{ip}\left( \frac{\hat{\sigma}_w^2 - \hat{u}_{wi}^2}{\hat{\sigma}_w^4}
-- \frac{\hat{\sigma}_v^2 - \hat{u}_{vi}^2}{\hat{\sigma}_v^4}
-\right)\right) = 
-x_{ip}^2 \left( Var\left( \frac{\hat{\sigma}_w^2 - \hat{u}_{wi}^2}{\hat{\sigma}_w^4} \right)  + Var\left( \frac{\hat{\sigma}_v^2 - \hat{u}_{vi}^2}{\hat{\sigma}_v^4}\right)\right)$$
- $$ = \frac{\hat{\sigma}_w^4 + \hat{\sigma}_v^4}{\hat{\sigma}_w^4 \hat{\sigma}_v^4}$$
-
-\noindent We can re-write $r_{12,p}$ as following as a pre-processing to compute $cov(r_{12,p}, r_{12,p})$,
-$$\hat{\sigma}_w^2 = 2 + \frac{2\hat{\rho}_{12}}{\sqrt{\hat{\rho}_{11}\hat{\rho}_{22}}} = 2+2\hat{\tau}_{12}$$
-$$\hat{\sigma}_v^2 = 2 - \frac{2\hat{\rho}_{12}}{\sqrt{\hat{\rho}_{11}\hat{\rho}_{22}}} = 2-2\hat{\tau}_{12}$$
-where $\rho_{12}$ is the constant correlation between variables 1 and 2 under the null hypothesis. Note that $\hat{\sigma}_w^2$ converges to $\sigma_w^2$ in probability, and so does $\hat{\rho}_{12}$ to $\rho_{12}$. We also define
-$\hat{\tau}_{13} = \frac{\hat{\rho}_{13}}{\sqrt{\hat{\rho}_{11}\hat{\rho}_{33}}}$
-$\hat{\tau}_{23} = \frac{\hat{\rho}_{23}}{\sqrt{\hat{\rho}_{22}\hat{\rho}_{33}}}$
-\begin{equation}
-\begin{multlined}
-    r_{p,12} = \frac{1}{\sqrt{2N}} \frac{1}{\sqrt{8(1 + \hat{\tau}_{12}^2)}}
-    \sum_{i=1}^{N} x_{ip}\left( (2-2\hat{\tau}_{12})- \frac{2-2\hat{\tau}_{12}}{2+2\hat{\tau}_{12}}(\hat{u}_{1i}+\hat{u}_{2i})^2\right)\\  - \left( (2+2\hat{\tau}_{12}) - \frac{2+2\hat{\tau}_{12}}{2-2\hat{\tau}_{12}}(\hat{u}_{1i}-\hat{u}_{2i})^2\right)\\
-    = \frac{1}{\sqrt{16N(1+\hat{\tau}_{12}^2)}} \sum_{i=1}^{N}x_{ip}
-    \left( 
-    \frac{4((\hat{\tau}_{12}^3 - \hat{\tau}_{12}) - \hat{u}_{1i}\hat{u}_{2i}(\hat{\tau}_{12}^2 + 1) + \hat{\tau}_{12}(\hat{u}_{1i}^2 + \hat{u}_{2i}^2))}{(1-\hat{\tau}_{12})(1+\hat{\tau}_{12})}
-    \right)\\
-    = \frac{1}{\sqrt{N(1+\hat{\tau}_{12}^2)}}\sum_{i=1}^{N}x_{ip} \left( 
-    \frac{(\hat{\tau}_{12}^3 - \hat{\tau}_{12}) - \hat{u}_{1i}\hat{u}_{2i}(\hat{\tau}_{12}^2 + 1) + \hat{\tau}_{12}(\hat{u}_{1i}^2 + \hat{u}_{2i}^2)}{(1-\hat{\tau}_{12})(1+\hat{\tau}_{12})}
-    \right)
-\end{multlined}
-\end{equation}
-
- Similarly,
-\begin{align*}
-    r_{p,13} = 
-    \frac{1}{\sqrt{N(1+\hat{\tau}_{13}^2)}}\sum_{i=1}^{N}x_{ip} \left( 
-    \frac{(\hat{\tau}_{13}^3 - \hat{\tau}_{13}) - \hat{u}_{1i}\hat{u}_{3i}(\hat{\tau}_{13}^2 + 1) + \hat{\tau}_{13}(\hat{u}_{1i}^2 + \hat{u}_{3i}^2))}{(1-\hat{\tau}_{13})(1+\hat{\tau}_{13})}
-    \right)
-\end{align*}
-
-$$cov(r_{12,p}, r_{13,p}) = E(r_{12,p}r_{13,p}) - E(r_{12,p})E(r_{13,p}) = E(r_{12,p}r_{13,p})$$
-
- Then, after some algebra,
-
-\begin{equation}
-    \begin{multlined}
-    \eta_{12,13} = E\sum_{i=1}^{N}x_{ip}^2  \frac{\hat{u}_{i1}^2 \hat{u}_{2i}\hat{u}_{3i}(\hat{\tau}_{12}^2+1)(\hat{\tau}_{13}^2+1)
-    + \hat{\tau}_{12}\hat{\tau}_{13} (\hat{u}_{1i}^2 + \hat{u}_{2i}^2)(\hat{u}_{1i}^2 + \hat{u}_{3i}^2)}{N(1-\hat{\tau}_{12}^2)(1-\hat{\tau}_{13}^2)\sqrt{(1+\hat{\tau}_{12}^2)(1+\hat{\tau}_{13}^2)}} \\
-    - \frac{\hat{\tau}_{12}(\hat{\tau}_{13}^2 + 1) (\hat{u}_{1i}\hat{u}_{3i})(\hat{u}_{1i}^2 + \hat{u}_{2i}^2) + \hat{\tau}_{13}(\hat{\tau}_{12}^2+1)(\hat{u}_{1i}\hat{u}_{2i})(\hat{u}_{1i}^2 + \hat{u}_{3i}^2)}{N(1-\hat{\tau}_{12}^2)(1-\hat{\tau}_{13}^2)\sqrt{(1+\hat{\tau}_{12}^2)(1+\hat{\tau}_{13}^2)}}
-    \end{multlined} 
-    \end{equation}
-    
-\begin{equation} \begin{multlined}
-= \frac{(\tau_{23}+2\tau_{12}\tau_{13})(\tau_{12}^2+1)(\tau_{13}^2+1) + \tau_{12}\tau_{13}(6+2(\tau_{12}^2+\tau_{13}^2+\tau_{23}^2))}{(1-{\tau}_{12}^2)(1-{\tau}_{13}^2)\sqrt{(1+{\tau}_{12}^2)(1+{\tau}_{13}^2)}} \\
-- \frac{\tau_{12}(\tau_{13}^2+1)(4\tau_{13}+2\tau_{12}\tau_{23}) + \tau_{13}(\tau_{12}^2+1)(4\tau_{12}+2\tau_{13}\tau_{23})}{(1-{\tau}_{12}^2)(1-{\tau}_{13}^2)\sqrt{(1+{\tau}_{12}^2)(1+{\tau}_{13}^2)}}
-\end{multlined} \end{equation}
-from
-$$E(\hat{u}_{i1}^4) = 3, \hspace{5mm} E(\hat{u}_{i1}^3 \hat{u}_{i2}) = 3\tau_{12}, \hspace{5mm} E(\hat{u}_{i1}^2\hat{u}_{i2}^2) = 1 + 2\tau_{12}^2,$$
-$$E(\hat{u}_{i1}^2 \hat{u}_{i2} \hat{u}_{i3}) = \tau_{23} + 2\tau_{12}\tau_{13}.$$
-
-\section*{Appendix C. Details of Small Sample Correction}
+\section*{Appendix B. Small Sample Correction}
 Although the introduced test statistic $q$ asymptotically follows $\chi_1^2$, the statistic has its error in the order of $N^{-1}$ (\cite{harris1985asymptotic}) with finite sample size $N$, and many Monte Carlo experiments show that the test rejects the null hypothesis less frequently than indicated by its nominal size (\cite{godfrey1978testing, griffiths1986monte, honda1988size}). In response, Harris (1985) used Edgeworth expansion to obtain the distribution and moment generating function to order $N^{-1}$ of the test statistic (\cite{harris1985asymptotic}). Building on this expansion, Honda (1986) and Cribari-Neto and Ferrari (2001) proposed corrections to the critical value or to the test statistic that allows better inference even when the sample size is small while preserving the asymptotic properties.\\
 
 Honda (1988) provided a closed-form formula to adjust the critical value in the order of $O(N^{-1})$ to correct the type I error of the test. This adjustment, only depending on the covariate, sample size, and the degrees of freedom, but not on the data, is a cubic function with respect to $C_{\gamma}$, the critical value at the level of type I error $\gamma$, i.e. $P(\chi_{P}^2 \geq C_{\gamma}) = \gamma$, and we refer to this cubic function as $g$ defined as follows.
