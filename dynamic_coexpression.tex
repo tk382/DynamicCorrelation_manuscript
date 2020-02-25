@@ -1,4 +1,4 @@
-\documentclass[aap,authoryear, preprint]{imsart}
+\documentclass[aoas,authoryear, preprint]{imsart}
 \RequirePackage[OT1]{fontenc}
 \RequirePackage{amsthm,amsmath}
 \RequirePackage{natbib}
@@ -76,85 +76,84 @@ The rest of the paper is organized as follows. First, we lay out the framework f
 
 \section{Methods}
 \subsection{Test for connectivity between two genes \label{sec:framework2}}
-Consider 2-dimensional data for $N$ subjects $\bm{y}_i \in \mathbb{R}^2$, $i = 1, 2, \cdots, N$ independently following the bivariate normal distribution. There are two covariate matrices $Z \in \mathbb{R}^{N \times R}$ and $X \in \mathbb{R}^{N \times P}$, each for the mean term and the variance term, respectively. They are both assumed to be full rank. We notate each element of $X$ and $Z$ as $\{x_{ip}\}_{i=1,p=1}^{N,P}$ and $\{z_{ir}\}_{i=1,r=1}^{N,R}$.
+Consider 2-dimensional data for $N$ subjects $\bm{y}_i \in \mathbb{R}^2$, $i = 1, 2, \cdots, N$ independently following the bivariate normal distribution. There are two covariate matrices $Z \in \mathbb{R}^{N \times R}$ and $X \in \mathbb{R}^{N \times P}$, each for the mean term and the variance term, respectively. The first covariate matrix $Z$ has unity in its first column as the intercept. They are both assumed to be full rank. We notate each element of $X$ and $Z$ as $\{x_{ip}\}_{i=1,p=1}^{N,P}$ and $\{z_{ir}\}_{i=1,r=1}^{N,R}$.
 \begin{equation}
 \begin{multlined}
     \begin{bmatrix} y_{i1} \\ y_{i2} \end{bmatrix} = 
-    \begin{bmatrix} b_{1} \\ b_{2} \end{bmatrix} + 
     \begin{bmatrix} \bm{z}_i^T \bm{\beta}_1 \\ \bm{z}_i^T \bm{\beta}_2 \end{bmatrix} + 
-    \begin{bmatrix} {u_{i1}} \\ {\hat{u}_{i2}} \end{bmatrix}\\
+    \begin{bmatrix} {u_{i1}} \\ u_{i2} \end{bmatrix}\\
     \begin{bmatrix} {u_{i1}} \\ u_{i2} \end{bmatrix} 
     \sim \mathcal{N}\left(
         \begin{bmatrix} 0 \\ 0 \end{bmatrix}, 
-        \begin{bmatrix} \sigma_1^2 & \rho_{12}(\bm{x}_i) \\ 
-        \rho_{12}(\bm{x}_i) & \sigma_2^2 \end{bmatrix}
+        \begin{bmatrix} \sigma_1^2 & \rho(\bm{x}_i) \\ 
+        \rho(\bm{x}_i) & \sigma_2^2 \end{bmatrix}
     \right)
     \end{multlined}
     \label{eq:framework_2genes}
 \end{equation}
-$\bm{\beta}_1$ and $\bm{\beta}_2$ are coefficients with length $R$  for the mean term $Z$. $\sigma_1^2$ and $\sigma_2^2$ are fixed scalars but $\rho_{12}$ varies with the covariate. We define $\bm{\alpha} \in \mathbb{R}^{P}$ and a scalar $\alpha_0$ as the linear coefficients to model $\rho_{12}$ as follows.
+$\bm{\beta}_1$ and $\bm{\beta}_2$ are coefficients with length $R$  for the mean term $Z$. $\sigma_1^2$ and $\sigma_2^2$ are fixed scalars but $\rho$ varies with the covariate. We define $\bm{\alpha} \in \mathbb{R}^{P}$ and a scalar $\alpha_0$ as the linear coefficients to model $\rho$ as follows.
 \begin{equation}
-    \rho_{12}(\bm{x}_i) = \rho_{12}(\bm{x}_i^T\bm{\alpha} + \alpha_0) \label{eq:rho}
+    \rho(\bm{x}_i) = \rho(\bm{x}_i^T\bm{\alpha} + \alpha_0) \label{eq:rho}
 \end{equation}
-Our parameter of interest is $\bm{\alpha}$ while all others --- $\alpha_0$, $\bm{b}$, $\bm{\beta}$, $\sigma_1^2$, $\sigma_2^2$ --- are nuisance parameters. Our goal is to develop a method that tests the following null hypothesis
+Our parameter of interest is $\bm{\alpha}$ while all others --- $\alpha_0$, $\bm{\beta}$, $\sigma_1^2$, $\sigma_2^2$ --- are nuisance parameters. Our goal is to develop a method that tests the following null hypothesis
 \begin{equation}
     H_0: \bm{\alpha} = \bm{0}.
     \label{eq:null}
 \end{equation}
-Under the null hypothesis, $\rho_{12}(\bm{x}_i^T\bm{\alpha} + \alpha_0) = \rho_{12}(\alpha_0)$ is a constant regardless of $\bm{x}_i$. The linearity and additivity assumptions in (\ref{eq:rho}) are standard, and since $\rho_{12}$ can take any non-linear form, (\ref{eq:rho}) still is a flexible framework. Before we introduce the detailed methodology, we first present our result below.
+Under the null hypothesis, $\rho(\bm{x}_i^T\bm{\alpha} + \alpha_0) = \rho(\alpha_0)$ is a constant regardless of $\bm{x}_i$. The linearity and additivity assumptions in (\ref{eq:rho}) are standard, and since $\rho$ can take any non-linear form, (\ref{eq:rho}) still is a flexible framework.\\
+
+The model (\ref{eq:framework_2genes}) is close to a multivariate regression model of $\bm{y}_i$ against the mean term $\bm{z}_i$ with intercept $\bm{b}_0$, slope $\begin{bmatrix} \bm{\beta}_1 & \bm{\beta}_2 \end{bmatrix}$, and error term $\bm{u}_i$. The difference is that its error variance depends on the covariate $\bm{x}_i$. The function $\rho$ represents an unknown form of heteroskedasticity between the two variables $1$ and $2$. In the context of gene coexpression of African Americans, $\bm{y}_i$ is gene expression level of an African American individual $i$ at two selected genes, and $\bm{x}_i$ is a $P$-dimensional covariate matrix for individual $i$ that holds information about genetic ancestry. It can be a scalar that represents the proportion of African ancestry in the genome, a vector of the first few principal components of the genotypes, or a vector of local ancestry at multiple loci. In the application example in section \ref{sec:applications}, we focus on scalar $\bm{x}_i$ for straightforward interpretability. \\
+
+We have two well-known tools to test the null hypothesis (\ref{eq:null}): likelihood ratio test and Rao's score test (\cite{breusch1979simple}). The likelihood ratio test has a few disadvantages compared to the score test. It requires the full specification of the function $\rho$ to estimate the maximum likelihood estimate (MLE) of $\bm{\alpha}$ both under the null hypothesis and under the alternative hypothesis. Possible functions of $\rho$ are any kind of sigmoid function bound to $(-\sqrt{\sigma_1^2\sigma_2^2}$, $\sqrt{\sigma_1^2\sigma_2^2})$ such as logistic function, hyperbolic tangent function, or any cumulative distribution supported on the whole real line. This modeling strategy leads to one disadvantage; as mentioned in the previous section, we would like to impose as few assumptions on the specific form of heteroskedasticity as possible. If $\rho$ is highly misspecified, we sacrifice the statistical power. Another disadvantage is that most of the reasonable assumptions of $\rho$, such as the sigmoid functions mentioned above, do not lead to a closed form MLE of $\bm{\alpha}$ under the alternative hypothesis. It would require us to numerically optimize the likelihood, leading to computational inefficiency, especially when the test space is large as in our application of gene coexpression. \\
+
+On the other hand, Rao's score test, unlike the likelihood ratio test, only requires the MLE of $\bm{\alpha}$ under the null hypothesis (\cite{rao1973linear}). Moreover, under our linear and additive model ($\rho(\bm{x}_i) = \rho(\alpha_0 + \bm{x}_i^T\bm{\alpha})$), the test statistic does not depend on the form of $\rho$ while maintaining its asymptotic property as long as $\rho$ is twice differentiable. In order to test (\ref{eq:null}), we expand the result from \cite{breusch1979simple} to derive the test statistic.\\ 
 
 \begin{prop}
-Consider the model in (\ref{eq:framework_2genes}). If the non-diagonal term of $\Sigma$ follows the function $\rho_{12}$ as defined in (\ref{eq:rho}), the score statistic does not depend on the unknown function $\rho_{12}$ and follows $\chi_P^2$ under the null hypothesis (\ref{eq:null}). 
+Consider the model in (\ref{eq:framework_2genes}). If the non-diagonal term of $\Sigma$ follows the function $\rho$ as defined in (\ref{eq:rho}), then Rao's score statistic does not depend on the unknown function $\rho$ and asymptotically follows $\chi_P^2$ under the null hypothesis (\ref{eq:null}).
 \label{theorem:q}
 \end{prop}
 
-The model (\ref{eq:framework_2genes}) is close to a multivariate regression model of $\bm{y}_i$ against the mean term $\bm{z}_i$ with intercept $\bm{b}_0$, slope $\begin{bmatrix} \bm{\beta}_1 & \bm{\beta}_2 \end{bmatrix}$, and error term $\bm{u}_i$. The difference is that its error variance depends on the covariate $\bm{x}_i$. The function $\rho_{12}$ represents an unknown form of heteroskedasticity between the two variables $1$ and $2$. In the context of gene coexpression of African Americans, $\bm{y}_i$ is gene expression level of an African American individual $i$ at two selected genes, and $\bm{x}_i$ is a $P$-dimensional covariate matrix for individual $i$ that holds information about genetic ancestry. It can be a scalar that represents the proportion of African ancestry in the genome, a vector of the first few principal components of the genotypes, or a vector of local ancestry at multiple loci. In the application example in section \ref{sec:applications}, we focus on scalar $\bm{x}_i$ for straightforward interpretability. \\
-
-We have two well-known tools to test the null hypothesis (\ref{eq:null}): likelihood ratio test and Rao's score test (\cite{breusch1979simple}). \\
-
-The likelihood ratio test has a few disadvantages compared to the score test. It requires the full specification of the function $\rho$ to estimate the maximum likelihood estimate (MLE) of $\bm{\alpha}$ both under the null hypothesis and under the alternative hypothesis. Possible functions of $\rho_{12}$ are any kind of sigmoid function bound to $(-\sqrt{\sigma_1^2\sigma_2^2}$, $\sqrt{\sigma_1^2\sigma_2^2})$ such as logistic function, hyperbolic tangent function, or any cumulative distribution supported on the whole real line. This modeling strategy leads to one disadvantage; as mentioned in the previous section, we would like to impose as few assumptions on the specific form of heteroskedasticity as possible. If $\rho_{12}$ is highly misspecified, we sacrifice the statistical power. Another disadvantage is that most of the reasonable assumptions of $\rho$, such as the sigmoid functions mentioned above, do not lead to a closed form MLE of $\bm{\alpha}$ under the alternative hypothesis. It would require us to numerically optimize the likelihood, leading to computational inefficiency, especially when the test space is large as in our application of gene coexpression. \\
-
-On the other hand, Rao's score test, unlike the likelihood ratio test, only requires the MLE of $\bm{\alpha}$ under the null hypothesis (\cite{rao1973linear}). Moreover, under our linear and additive model ($\rho_{12}(\bm{x}_i) = \rho_{12}(\bm{x}_i^T\bm{\alpha})$), the test statistic does not depend on the form of $\rho_{12}$ while maintaining its asymptotic property as long as $\rho_{12}$ is twice differentiable. In order to test (\ref{eq:null}), we expand the result from \cite{breusch1979simple} to derive the test statistic.\\ 
 
 The Fisher Information of the model (\ref{eq:framework_2genes}) is block diagonal: one block for mean parameters $\bm{b}$, $\bm{\beta}$ and another block for variance parameters $\sigma_1^2$, $\sigma_2^2$, $\alpha_0$, and $\bm{\alpha}$. Therefore, to derive the score statistic, we only need the first and second derivatives of the log likelihood with respect to the variance parameters. Moreover, we can plug in the MLEs of the nuisance parameters to get the score statistic. So, we replace $u_{i1}$ with the OLS residuals $\hat{u}_{i1}$ from the regression of (\ref{eq:framework_2genes}). The score statistic is as follows, and the detailed derivation is in the Appendix A. 
 \begin{equation}
-    q_{12} = \frac{1}{N(\hat{\sigma}_1^2\hat{\sigma}_2^2+\hat{\rho}_{12}^2)}\sum_{i=1}^{N} (\hat{u}_{i1}\hat{u}_{i2}-\hat{\rho}_{12})\bm{\tilde{x}}_i^T (\sum_{i=1}^{N}\bm{\tilde{x}}_i \bm{\tilde{x}}_i^T)^{-1}
-    \sum_{i=1}^{N} (\hat{u}_{i1}\hat{u}_{i2}-\hat{\rho}_{12})\bm{\tilde{x}}_i
+    q = \frac{1}{(\hat{\sigma}_1^2\hat{\sigma}_2^2+\hat{\rho}^2)}\sum_{i=1}^{N} (\hat{u}_{i1}\hat{u}_{i2}-\hat{\rho})\bm{\tilde{x}}_i^T (\sum_{i=1}^{N}\bm{\tilde{x}}_i \bm{\tilde{x}}_i^T)^{-1}
+    \sum_{i=1}^{N} (\hat{u}_{i1}\hat{u}_{i2}-\hat{\rho})\bm{\tilde{x}}_i
     \label{eq:q}
 \end{equation}
-where $\hat{\rho}_{12} = \rho_{12}(\hat{\alpha}_0) = \frac{1}{N} \sum_{i=1}^{N} \hat{u}_{i1}\hat{u}_{i2}$, and $\bm{\tilde{x}}_i$ is the covariate with the intercept term: $\begin{bmatrix} 1 & \bm{x}_i \end{bmatrix}^T$. The first derivative of $\rho_{12}'$ has been canceled out, and therefore the score statistic does not depend on the function $\rho_{12}$; it only depends on the MLE of the covariance $\hat{\rho}_{12}$. Every component of the test statistic is easily acquired from the data, and the computational burden is low. Just as importantly, it is flexible as it allows any form of $\rho_{12}$. Under this setting, $q$ asymptotically follows $\chi_{P}^2$ (\cite{breusch1979simple}).\\
+where $\hat{\sigma}_1^2 = \frac{1}{N} \sum_{i=1}^{N} \hat{u}_{i1}^2$, $\hat{\sigma}_2^2  = \frac{1}{N} \sum_{i=1}^{N} \hat{u}_{i2}^2$, $\hat{\rho} = \rho(\hat{\alpha}_0) = \frac{1}{N} \sum_{i=1}^{N} \hat{u}_{i1}\hat{u}_{i2}$, and $\bm{\tilde{x}}_i$ is the covariate with the intercept term: $\begin{bmatrix} 1 & \bm{x}_i \end{bmatrix}^T$. The first derivative of $\rho$ has been canceled out, and therefore the score statistic does not depend on the function $\rho$; it only depends on the MLE of the covariance $\hat{\rho}$. Every component of the test statistic is easily acquired from the data, and the computational burden is low. Just as importantly, it is flexible as it allows any form of $\rho$. Under this setting, $q$ asymptotically follows $\chi_{P}^2$ (\cite{breusch1979simple}).\\
 
-However, even though the introduced test statistic has convenient asymptotic properties, the inference might not be correct under finite sample size. The error is in the order of $N^{-1}$ (\cite{harris1985asymptotic}), and many Monte Carlo experiments show that the test rejects the null hypothesis less frequently than indicated by its nominal size (\cite{ godfrey1978testing, griffiths1986monte}. In response, corrections have been suggested (\cite{cribari2001monotonic, harris1985asymptotic}), and we apply the method from \cite{honda1988size} to ensure the validity of the asymptotic properties even under the small sample size. The details of the small-sample correction, as well as the detailed derivation of the test statistic, are shown in the Appendix.\\
+
+
+However, even though the introduced test statistic has convenient asymptotic properties, the inference might not be correct under finite sample size. The error is in the order of $N^{-1}$ (\cite{harris1985asymptotic}), and many Monte Carlo experiments show that the test rejects the null hypothesis less frequently than indicated by its nominal size (\cite{ godfrey1978testing, griffiths1986monte}. In response, corrections have been suggested (\cite{cribari2001monotonic, harris1985asymptotic}), and we apply the method from \cite{honda1988size} to ensure the validity of the asymptotic properties even under the small sample size. The details of the small-sample correction, as well as the detailed derivation of the test statistic, are shown in the Appendix.
 
 
 \subsection{Test for Local Connectivity \label{sec:frameworkK}} 
-In section (\ref{sec:framework2}), we proposed the statistic $q$ to test a pair of variables 1 and 2 to measure the evidence that their correlation changes with the covariate $X$. As a natural extension to the pair-wise test statistic, we can repeat the procedure for more than 2 variables. In particular, we can study one transcription factor with  multiple target genes to test whether the local connectivity of the transcription factor varies with genetic ancestry. In this section, we propose a way to combine the test statistics to test a new global null hypothesis. The global null hypothesis for variable $1$ extends (\ref{eq:null}) as follows,
+In section (\ref{sec:framework2}), we proposed the statistic $q$ to test a pair of variables 1 and 2 to measure the evidence that their correlation changes with the covariate $X$. As a natural extension to the pair-wise test statistic, we can repeat the procedure with more variables to study local connectivity. From here on, we notate $q$ as $q_{12}$, $\bm{\alpha}$ as $\bm{\alpha}_{12}$, and $\rho$ as $\rho_{12}$ to specify the variable pair that are being tested. We set up the global null hypothesis as follows by looking at the first row of the covariance matrix for the variables $y_1$, $y_2$, $\cdots$, $y_K$. 
 \begin{equation}
     \bm{H}_0^{(1)}: \bm{\alpha}_{12} = \bm{\alpha}_{13} = \cdots = \bm{\alpha}_{1K} = \bm{0},
 \label{eq:globalnull}
 \end{equation}
-where the superscript in $\bm{H}_0^{(1)}$ indicates that the null hypothesis applies to variable 1. Under $\bm{H}_0^{(1)}$, no other variables' correlation with variable 1 changes across the different values of  $X$. We believe testing the global null (\ref{eq:globalnull}) improves the statistical power when the ``hot spot" variables or ``hub" variables are connected to a lot of other nodes forming cliques or modules. In the context of gene coexpression network, we know that transcription factors regulate the gene expression of multiple genes, and if one transcription factor varies with respect to the covariate, the transcriptions of its regulated genes are likely to be correlated with the covariate as well. \\
+$\bm{H}_0^{(1)}$, no other variables' correlation with variable 1 changes across the different values of  $X$. We believe testing the global null (\ref{eq:globalnull}) improves the statistical power when the ``hot spot" variables or ``hub" variables are connected to a lot of other nodes forming cliques or modules. In the context of gene coexpression network, we know that transcription factors regulate the gene expression of multiple genes, and if one transcription factor varies with respect to the covariate, the transcriptions of its regulated genes are likely to be correlated with the covariate as well. \\
 
 We propose a way to combine the test statistics to test (\ref{eq:globalnull}). \cite{chen2012exponential} discusses two ways to construct the alternative hypothesis for testing the global null. One way, called a sparse alternative, is to test whether only a small number among all tests have non-zero effects while all other tests are null. Another way is to test if at least one test has a non-zero effect size. Based on our prior knowledge in biology and coexpression network, we assume that there are many small signals instead of few big ones, so we choose the latter. We propose a simple linear combination of the test statistics
 \begin{equation}
 d_1 = {q}_{12} + {q}_{13} + \cdots + {q}_{1K} = \sum_{k=2}^{K} {q}_{1k}.
 \label{eq:d}
 \end{equation}
-Note that $q$ has been constructed from normalized data of $w$ and $v$. It is, therefore, the most natural to add them without additional weighting. We believe the statistic $d_1$ in  (\ref{eq:d}) improves the statistical power because even if the effect sizes for each gene pair may be too small to be detected, when combined, they can form a stronger signal. \\
+where $q_{ij}$ is the score statistic based on variables $i$ and variables $j$. The score statistics are normalized with variances, and it is, therefore, the most natural to add them without additional weighting. We believe the statistic $d_1$ in  (\ref{eq:d}) improves the statistical power because even if the effect sizes for each gene pair may be too small to be detected, when combined, they can form a stronger signal. \\
 
 We derive the null distribution of $d_1$ to test (\ref{eq:globalnull}). Although each ${q}_{1k}$ follows $\chi_{P}^2$, they are correlated to one another, so the null distribution is not trivial. We devise a way to simulate the null distribution as a finite sum of Gamma distributions so that we can estimate the empirical quantile of $d_1$. We therefore propose the following.
 
 \begin{prop}
-Under the setting of Proposition \ref{theorem:q}, and two additional assumptions that (1) the covariates have been orthogonalized so that 
-$\frac{1}{N} \sum_{i=1}^{N} \bm{x}_i \bm{x}_i^T$ is a $P$ by $P$ identity matrix and that (2) none of the variables $y_1, \cdots, y_K$ are perfectly correlated, $d_1$ asymptotically follows the finite sum of Gamma distributions as defined in (\ref{eq:d_dist}) under the global null hypothesis (\ref{eq:globalnull}). 
+Under the setting of Proposition \ref{theorem:q}, if none of the variables $y_1, \cdots, y_K$ are perfectly correlated, $d_1$ asymptotically follows the finite sum of Gamma distributions as defined in (\ref{eq:d_dist}) under the global null hypothesis (\ref{eq:globalnull}). 
 \end{prop}
 
-To derive the empirical null distribution of $d_1$, We start by re-writing the pairwise score statistic $q$ (omitting gene pair index for now) as a sum of $\chi_1^2$ variables as below. Our null hypothesis tests for all covariates at the same time, so we can orthogonalize $X$ to make $\frac{1}{N} \sum_{i=1}^{N} \bm{x}_i \bm{x}_i^T$ an identity matrix without affecting the testing procedure. Let $\tilde{X}$ be the orthogonalized covariate matrix, and $\tilde{x}_{ip}$ be the corresponding entries with $\sum_{i=1}^{N}\tilde{x}_{ip} = 0$ and $\sum_{i=1}^{N} \tilde{x}_{ip}^2  = n$. Then (\ref{eq:q}) can be alternatively written as follows, where we define $r_{p}.$
+To derive the empirical null distribution of $d_1$, we start by re-writing the pairwise score statistic $q$ (omitting gene pair index for now) as a sum of $\chi_1^2$ variables as below. Our null hypothesis tests for all covariates at the same time, so we can orthogonalize $X$ to make $\frac{1}{N-1} \sum_{i=1}^{N} \bm{x}_i \bm{x}_i^T$ an identity matrix without affecting the testing procedure. Let $\tilde{X}$ be the orthogonalized covariate matrix, and $\tilde{x}_{ip}$ be the corresponding entries with $\sum_{i=1}^{N}\tilde{x}_{ip} = 0$ and $\sum_{i=1}^{N} \tilde{x}_{ip}^2  = N-1$. Then (\ref{eq:q}) can be alternatively written as follows, where we define $r_{p}.$ The details are in Appendix C. 
 \begin{align}
-q = \sum_{p=1}^{P}
- \left(\frac{1}{\sqrt{N}}
+q_{12} = \sum_{p=1}^{P}
+ \left(\frac{1}{\sqrt{N-1}}
  \sum_{i=1}^{N} \frac{x_{ip} \left(\hat{u}_{i1}\hat{u}_{i2} - \hat{\rho}_{12} \right)}{\sqrt{\hat{\sigma}_{1}^2\hat{\sigma}_{2}^2 + \hat{\rho}_{12}^2}}
-\right)^2 = \sum_{p=1}^{P}r_p^2
+\right)^2 = \sum_{p=1}^{P}r_{12,p}^2
 \label{eq:r}
 \end{align}
 For each $p$, $r_p$ asymptotically follows the standard normal distribution by the Central Limit Theorem. \\
@@ -168,11 +167,11 @@ r_{12,p} \\ r_{13, p} \\ \cdots \\ r_{1K,p}
 \end{equation}
 $H_1$ is a $(K-1) \times (K-1)$ matrix where $(k-1, \ell-1)$th element is $\eta_{1k, 1\ell}$ for $k, \ell = 2, \cdots K$. From (\ref{eq:r}), it is easy to see that $H_1$ has 1 at the diagonals. Also, $\eta_{1k, 1\ell}$ converges in probability to
 \begin{equation}
-\frac{\hat{\rho}_{23} + \hat{\rho}_{12}\hat{\rho}_{13}}{
-\sqrt{(\hat{\sigma}_1^2\hat{\sigma}_2^2 - \hat{\rho}_{12}^2)(\hat{\sigma}_1^2\hat{\sigma}_3^2 - \hat{\rho}_{13}^2)}}
+\frac{\hat{\sigma}_1^2\hat{\rho}_{23} + \hat{\rho}_{12}\hat{\rho}_{13}}{
+\sqrt{(\hat{\sigma}_1^2\hat{\sigma}_2^2 + \hat{\rho}_{12}^2)(\hat{\sigma}_1^2\hat{\sigma}_3^2 + \hat{\rho}_{13}^2)}}
 \label{eq:eta}\end{equation}
 
-Note that $d_1$ can be written as the sum of L2 norm of $\bm{r}_{1,p}$ with a known distribution, 
+\noindent Note that $d_1$ can be written as the sum of L2 norm of $\bm{r}_{1,p}$ with a known distribution, 
 \begin{equation}
 d_1 = \sum_{p=1}^{P} \|\bm{r}_{1,p}\|_2^2 = \sum_{p=1}^{P} \sum_{k=2}^K r_{1k,p}^2.
 \label{eq:d2}
@@ -186,7 +185,7 @@ Let $H_1 = U_1 \Lambda_1 U_1^T$ be the eigen-decomposition of the covariance mat
     \label{eq:d_dist}
 \end{equation}
 
-Assuming that we know the true, symmetric, positive definite $H_1$, we can acquire positive $\lambda_{1k}$ for $k = 2, \cdots, K$, and we have expressed the null distribution of $d_1$ as the sum of distributions of independent gamma variables. We can computationally simulate this null distribution easily. Alternatively, Moschopoulos (1985) provides another interpretation by expressing the cumulative distribution in a form of infinite sum, but the method is inconvenient in practice.\\
+Assuming that we know the true, symmetric, positive definite $H_1$, we can acquire positive $\lambda_{1k}$ for $k = 2, \cdots, K$, and we have expressed the null distribution of $d_1$ as the sum of distributions of independent gamma variables. We can computationally simulate this null distribution easily. Alternatively, Moschopoulos (1985) provides another interpretation by expressing the cumulative distribution in a form of infinite sum, but the method is inconvenient in practice.\\ 
 
 In (\ref{eq:eta}), we define the element-wise mapping $\phi: \Sigma \rightarrow H$. Although we do not know true $\Sigma$ in practice, we can use its maximum likelihood estimate instead as we do with other nuisance parameters. We can see from the construction of $H$ that a well-conditioned, symmetric, positive definite estimate of $\hat{\Sigma}$ leads to a symmetric and positive-definite $\phi(\hat{\Sigma})$ as well. When $N$ is sufficiently larger than $K$, empirical covariance matrix $\hat{\Sigma}$ of $\begin{bmatrix} y_{1i} & y_{2i} & y_{3i} \end{bmatrix}$ is a consistent estimator for $\Sigma$, and replacing $\Sigma$ with $\hat{\Sigma}$ in computing $H$ can guarantee that the test statistic in (\ref{eq:d}) converges in distribution to (\ref{eq:d_dist}). \\
 
@@ -203,18 +202,18 @@ First, we check the calibration of test statistics under the null hypothesis. We
 $$\bm{y}_i \sim \mathcal{N}_2\left(\bm{b}_0 + \bm{z}_i^T\bm{\beta}, \begin{bmatrix} 1 & \bar{\rho} \\ \bar{\rho} & 1 \end{bmatrix}  \right)$$ 
 where $\bar{\rho}$ was randomly selected from uniform distribution ranging from -1 and 1 and each element of $\bm{b}_0$ and $\bm{\beta}$ from standard normal distribution. We use $\bm{z}_i = \bm{x}_i$. We test different sample sizes of $N = 500, 100, 30$ to check the behavior of each method under the null hypothesis. For each $N$, we sample $X$ once, and generate $Y$ 1,000 times. The likelihood ratio test was designed to assume hyperbolic tangent model for $\rho$,
 \begin{align}
-    \rho(\bm{x}_i^T\bm{\alpha}) = \frac{e^{\bm{x}_i^T\bm{\alpha}}-1}{e^{\bm{x}_i^T\bm{\alpha}}+1},
+    \rho(\bm{\tilde{x}}_i^T\bm{\tilde{\alpha}}) = \frac{e^{\bm{\tilde{x}}_i^T\bm{\tilde{\alpha}}}-1}{e^{\bm{\tilde{x}}_i^T\bm{\tilde{\alpha}}}+1},
     \label{eq:data_generating_fisher}
 \end{align}
 which is the inverse of Fisher transformation, 
-$\frac{1}{2} \bm{x}_i^T\bm{\alpha} = \frac{1}{2}log \left(\frac{1+\rho}{1-\rho}\right)$. Fisher-transformed $\rho$ asymptotically follows normal distribution, so it works well when $X$ is drawn from normal distribution. We use \textit{optim} function in R to find $\hat{\bm{\alpha}}_{\text{MLE}}$ under the alternative hypothesis. \\
+$\frac{1}{2} \bm{\tilde{x}}_i^T\bm{\tilde{\alpha}} = \frac{1}{2}log \left(\frac{1+\rho}{1-\rho}\right)$. Fisher-transformed $\rho$ asymptotically follows normal distribution, so it works well when $X$ is drawn from normal distribution. We use \textit{optim} function in R to find $\hat{\bm{\alpha}}_{\text{MLE}}$ under the alternative hypothesis. \\
 
 The results show that all three methods control the type I error at the nominal size well, where score and likelihood ratio test statistics both follow $\chi_1^2$ closely. \\
 
-Next we generate the data under the alternative hypothesis to compare the statistical power. So we focus on the case of $N=70$ to reflect the sample size of GTEx data. We again draw $X$ from standard normal distribution. Then, for $i = 1, \cdots, N$, we generate $\rho(\bm{x}_i^T\bm{\alpha})$ from hyperbolic tangent function in (\ref{eq:data_generating_fisher}). Given $\rho$, we draw $Y$ from (\ref{eq:framework_2genes}) with varying levels of $\alpha$, 1000 times each. The hyperbolic tangent model places the likelihood ratio test at an advantage because the model is correctly specified, so as a contrasting case, we use a quadratic model to generate $\rho$ as follows,
+Next we generate the data under the alternative hypothesis to compare the statistical power. So we focus on the case of $N=70$ to reflect the sample size of GTEx data. We again draw $X$ from standard normal distribution. Then, for $i = 1, \cdots, N$, we generate $\rho(\bm{\tilde{x}}_i^T\bm{\tilde{\alpha}})$ from hyperbolic tangent function in (\ref{eq:data_generating_fisher}). Given $\rho$, we draw $Y$ from (\ref{eq:framework_2genes}) with varying levels of $\alpha$, 1000 times each. The hyperbolic tangent model places the likelihood ratio test at an advantage because the model is correctly specified, so as a contrasting case, we use a quadratic model to generate $\rho$ as follows,
 
 \begin{align}
-    \rho(\alpha_0 + \bm{x}_i^T\bm{\alpha}) = ( - 0.1 + \bm{x}_i^T\bm{\alpha})^2 - 0.99,
+    \rho(\alpha_0 + \bm{\tilde{x}}_i^T\bm{\tilde{\alpha}}) = ( - 0.1 + \bm{\tilde{x}}_i^T\bm{\tilde{\alpha}})^2 - 0.99,
     \label{eq:data_generating2_quadratic}
 \end{align}
 
@@ -232,13 +231,13 @@ Table \ref{tab:pairwise_simulation} summarizes the result. It counts the proport
 
 \begin{table}
 \centering 
- \caption{Proportion of simulations for each method that showed $p$-value $<0.05$ at given data generating model and $\alpha$ level. We use two functions for $\rho$, hyperbolic tangent and quadratic function. The likelihood ratio test was conducted under the assumption that $\rho$ is hyperbolic tangent function.}
+ \caption{Proportion of simulations for each method that showed $p$-value $<0.05$ at given data generating model and $\alpha$ level. We use two functions for $\rho$, hyperbolic tangent and quadratic function. The likelihood ratio test was conducted under the assumption that $\rho$ is hyperbolic tangent function. The intercept $\alpha_0$ is 0 in all cases.}
  \label{tab:pairwise_simulation}
 \begin{tabular}{@{\extracolsep{5pt}} cc||cccc||cccc} 
 \multicolumn{1}{c}{$\rho$} &\multicolumn{1}{c}{}& \multicolumn{4}{c}{tanh} & \multicolumn{4}{c}{quadratic}\\
 \\[-1.8ex]\hline 
 \hline \\[-1.8ex]
-$\alpha$ & 0 & 0.25 & 0.5 & 0.75 & 1 & 0.2 & 0.3 & 0.4 & 0.5\\ 
+$\bm{\alpha}$ & 0 & 0.25 & 0.5 & 0.75 & 1 & 0.2 & 0.3 & 0.4 & 0.5\\ 
 \hline \\[-1.8ex]
 score & 0.052 & 0.181 & 0.467 & 0.806 & 0.928 & 0.764 & 0.660 & 0.604 & 0.553\\
 LA    & 0.051 & 0.181 & 0.472 & 0.779 & 0.911 & 0.048 & 0.054 & 0.054 & 0.052\\
@@ -288,18 +287,18 @@ We believe the proposed method can be applied to data problems in diverse domain
  
 \pagebreak
  
-\section*{Appendix A. Derivation of test statistic}
-We start from the likelihood of (\ref{eq:framework_2genes}).  
+\section*{Appendix A. Derivation of the test statistic}
+We start from the likelihood of (\ref{eq:framework_2genes}). 
 \begin{equation*}
     \begin{bmatrix} y_{i1} \\ y_{i2} \end{bmatrix} = 
     \begin{bmatrix} \bm{z}_i^T\bm{\beta}_1 \\ \bm{z}_i^T \bm{\beta}_2 \end{bmatrix} + \begin{bmatrix} u_{i1} \\ u_{i2} \end{bmatrix}
 \end{equation*}
 \begin{equation*}
     \begin{bmatrix} u_{i1} \\ u_{i2} \end{bmatrix} \sim \mathcal{N} \left( 
-    \begin{bmatrix} 0 \\0 \end{bmatrix}, \Sigma = \begin{bmatrix} \sigma_1^2 & \rho_{12}(\bm{\tilde{x}}_i^T\bm{\tilde{\alpha}}) \\ \rho_{12}(\bm{\tilde{x}}_i^T\bm{\tilde{\alpha}}) & \sigma_2^2 \end{bmatrix}\right)
+    \begin{bmatrix} 0 \\0 \end{bmatrix}, \Sigma = \begin{bmatrix} \sigma_1^2 & \rho(\bm{\tilde{x}}_i^T\bm{\tilde{\alpha}}) \\ \rho(\bm{\tilde{x}}_i^T\bm{\tilde{\alpha}}) & \sigma_2^2 \end{bmatrix}\right)
 \end{equation*}
 where $\tilde{\bm{\alpha}} = \begin{bmatrix} \alpha_0& \bm{\alpha}^T \end{bmatrix}$, and $\tilde{\bm{x}_i}$ is $\begin{bmatrix} 1 & \bm{x}_i\end{bmatrix}^T$. 
-We compute the first and second derivative of the log likelihood with respect to $\bm{\tilde{\alpha}}$ when all other nuisance parameters are replaced with their respective maximum likelihood estimates. $\bm{\tilde{\alpha}}$ is similarly replaced with $\begin{bmatrix} \hat{\alpha}_0 & \bm{0}\end{bmatrix}^T$ so that $\rho_{12}(\hat{\alpha}_0)$ is equal to $\frac{1}{N} \sum_{i=1}^{N} \hat{u}_{i1}\hat{u}_{i2}$. $\hat{u}_{i1}$ and $\hat{u}_{i2}$ is the OLS residuals of the above regression under the null hypothesis.
+We compute the first and second derivative of the log likelihood with respect to $\bm{\tilde{\alpha}}$ when all other nuisance parameters are replaced with their respective maximum likelihood estimates. Replacing $\bm{\beta}$ with its MLEs, we can effectively replace $u$ with its OLS residuals $\hat{u}$. $\bm{\tilde{\alpha}}$ is similarly replaced with $\begin{bmatrix} \hat{\alpha}_0 & \bm{0}\end{bmatrix}^T$ so that $\rho(\hat{\alpha}_0)$ is equal to $\frac{1}{N} \sum_{i=1}^{N} \hat{u}_{i1}\hat{u}_{i2}$. 
 \subsection*{Score function}
 We first derive the first derivative of the log likelihood with respect to $\bm{\alpha}$. We start from differentiating with respect to the variance matrix $\Sigma$. 
 $$\frac{\partial \ell} {\partial \Sigma} =
@@ -308,71 +307,71 @@ $$\frac{\partial \ell} {\partial \Sigma} =
 \frac{\partial \bm{u}_i^T \Sigma^{-1}\bm{u}_i}{\partial \Sigma}
 \right)
 $$
-Here, we use $\rho_{12}$ instead of $\rho_{12}(\bm{x}_i^T\bm{\alpha})$ for notational convenience. Similarly, $\hat{\rho}_{12}$ is used instead of ${\rho}_{12}(\hat{\alpha}_0).$
+Here, we use $\rho$ instead of $\rho(\bm{x}_i^T\bm{\alpha})$ for notational convenience. Similarly, $\hat{\rho}$ is used instead of ${\rho}_{12}(\hat{\alpha}_0).$
 The first component is as follows:
 $$\frac{\partial log(|\Sigma|)}{\partial \sigma_1^2}=
-\frac{\sigma_2^2}{\sigma_1^2\sigma_2^2 - \rho_{12}^2}, \hspace{4mm}
-\frac{\partial log(|\Sigma|)}{\partial \sigma_2^2} = \frac{\sigma_1^2}{\sigma_1^2\sigma_2^2 - \rho_{12}^2}, \hspace{4mm}
-\frac{\partial log(|\Sigma|)}{\partial \alpha} =  \frac{-2\rho_{12}\rho_{12}'}{\sigma_1^2\sigma_2^2 - \rho_{12}^2}x_i$$
+\frac{\sigma_2^2}{\sigma_1^2\sigma_2^2 - \rho^2}, \hspace{4mm}
+\frac{\partial log(|\Sigma|)}{\partial \sigma_2^2} = \frac{\sigma_1^2}{\sigma_1^2\sigma_2^2 - \rho^2}, \hspace{4mm}
+\frac{\partial log(|\Sigma|)}{\partial \alpha} =  \frac{-2\rho\rho'}{\sigma_1^2\sigma_2^2 - \rho^2}x_i$$
 
 For the second component, we first compute the following:
 \begin{align*}
-\bm{u}_i^T\Sigma^{-1}\bm{u}_i &= \frac{1}{\sigma_1^2 \sigma_2^2 - \rho_{12}^2}\begin{bmatrix}u_1 & u_2 \end{bmatrix}  \begin{bmatrix} \sigma_2^2 & -\rho_{12} \\ -\rho_{12} & \sigma_1^2 \end{bmatrix}  \begin{bmatrix}u_1\\ u_2 \end{bmatrix}\\
-% &= \frac{1}{\sigma_1^2 \sigma_2^2 - \rho_{12}^2} \begin{bmatrix} u_1 \sigma_2^2 - u_2 \rho_{12} & -u_1\rho_{12} + u_2\sigma_1^2 \end{bmatrix} \begin{bmatrix} u_1 \\ u_2 \end{bmatrix} \\
-% 	&= \frac{1}{\sigma_1^2\sigma_2^2 - \rho_{12}^2} \left(
-% 	u_1^2\sigma_2^2 - u_1u_2\rho_{12} - u_1u_2\rho_{12} + u_2^2\sigma_1^2
+\bm{u}_i^T\Sigma^{-1}\bm{u}_i &= \frac{1}{\sigma_1^2 \sigma_2^2 - \rho^2}\begin{bmatrix}u_1 & u_2 \end{bmatrix}  \begin{bmatrix} \sigma_2^2 & -\rho \\ -\rho & \sigma_1^2 \end{bmatrix}  \begin{bmatrix}u_1\\ u_2 \end{bmatrix}\\
+% &= \frac{1}{\sigma_1^2 \sigma_2^2 - \rho^2} \begin{bmatrix} u_1 \sigma_2^2 - u_2 \rho & -u_1\rho + u_2\sigma_1^2 \end{bmatrix} \begin{bmatrix} u_1 \\ u_2 \end{bmatrix} \\
+% 	&= \frac{1}{\sigma_1^2\sigma_2^2 - \rho^2} \left(
+% 	u_1^2\sigma_2^2 - u_1u_2\rho - u_1u_2\rho + u_2^2\sigma_1^2
 % 	\right)\\
-	&= \frac{1}{\sigma_1^2\sigma_2^2 - \rho_{12}^2} ( u_1^2\sigma_2^2 + u_2^2\sigma_1^2 - 2u_1u_2\rho_{12})
+	&= \frac{1}{\sigma_1^2\sigma_2^2 - \rho^2} ( u_1^2\sigma_2^2 + u_2^2\sigma_1^2 - 2u_1u_2\rho)
 \end{align*}
 Then, we can get the second component as follows,
 \begin{align*} \frac{\partial u^T \Sigma^{-1}u}{\partial \sigma_1^2}
 &= 
 \sum_{i=1}^{N}\frac{
-	u_{i2}^2(\sigma_1^2\sigma_2^2 - \rho_{12}^2) - (u_{i2}^2\sigma_1^2 + u_{i1}^2\sigma_2^2 - 2u_{i1}u_{i2}\rho_{12})\sigma_2^2
+	u_{i2}^2(\sigma_1^2\sigma_2^2 - \rho^2) - (u_{i2}^2\sigma_1^2 + u_{i1}^2\sigma_2^2 - 2u_{i1}u_{i2}\rho)\sigma_2^2
 }{
-	(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2
+	(\sigma_1^2\sigma_2^2 - \rho^2)^2
 }\\
   \frac{\partial u^T \Sigma^{-1}u}{\partial \sigma_2^2}
   &= 
 \sum_{i=1}^{N} \frac{
- u_{i1}^2(\sigma_1^2\sigma_2^2 - \rho_{12}^2) - (u_{i2}^2\sigma_1^2 + u_{i1}^2\sigma_2^2 - 2u_{i1}u_{i2}\rho_{12})\sigma_1^2
+ u_{i1}^2(\sigma_1^2\sigma_2^2 - \rho^2) - (u_{i2}^2\sigma_1^2 + u_{i1}^2\sigma_2^2 - 2u_{i1}u_{i2}\rho)\sigma_1^2
  }{
- (\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2
+ (\sigma_1^2\sigma_2^2 - \rho^2)^2
  }\\
    \frac{\partial u^T \Sigma^{-1}u}{\partial \alpha}
   &= 
- \sum_{i=1}^{N}\frac{-2u_{i1}u_{i2}\rho_{12}'(\sigma_1^2\sigma_2^2 - \rho_{12}^2) - (u_{i2}^2\sigma_1^2 + u_{i1}^2\sigma_2^2 - 2u_{i1}u_{i2}\rho_{12})(-2\rho_{12})(\rho_{12}')
+ \sum_{i=1}^{N}\frac{-2u_{i1}u_{i2}\rho'(\sigma_1^2\sigma_2^2 - \rho^2) - (u_{i2}^2\sigma_1^2 + u_{i1}^2\sigma_2^2 - 2u_{i1}u_{i2}\rho)(-2\rho)(\rho')
  }{
- (\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2
+ (\sigma_1^2\sigma_2^2 - \rho^2)^2
  }\bm{x}_i\\
 % \end{align*}
 % \begin{align*}
 %   \frac{\partial u^T \Sigma^{-1}u}{\partial \alpha}
 %   &= 
-%  \sum_{i=1}^{N}\frac{-2u_{i1}u_{i2}\rho_{12}'(\sigma_1^2\sigma_2^2 - \rho_{12}^2) - (u_{i2}^2\sigma_1^2 + u_{i1}^2\sigma_2^2 - 2u_{i1}u_{i2}\rho_{12})(-2\rho_{12})(\rho_{12}')
+%  \sum_{i=1}^{N}\frac{-2u_{i1}u_{i2}\rho'(\sigma_1^2\sigma_2^2 - \rho^2) - (u_{i2}^2\sigma_1^2 + u_{i1}^2\sigma_2^2 - 2u_{i1}u_{i2}\rho)(-2\rho)(\rho')
 %  }{
-%  (\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2
+%  (\sigma_1^2\sigma_2^2 - \rho^2)^2
 %  }\bm{x}_i\\
-%  &= \sum_{i=1}^{N} \frac{u_{i1}u_{i2}x_i(-2\rho_{12}'(\sigma_1^2\sigma_2^2 - \rho_{12}^2) - 4\rho_{12}^2\rho_{12}') + 4\sigma_1^2\sigma_2^2x_i\rho_{12}\rho_{12}'}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}\\
-%  &= \sum_{i=1}^{N} \frac{4\sigma_1^2\sigma_2^2\rho_{12}\rho_{12}' - u_{i1}u_{i2}\rho_{12}'(2\sigma_1^2\sigma_2^2 - 2\rho_{12}^2)}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}x_i\\
- &= \sum_{i=1}^{N} \rho_{12}' \frac{4\sigma_1^2\sigma_2^2\rho_{12} - 2u_{i1}u_{i2}(\sigma_1^2\sigma_2^2 - \rho_{12}^2)}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}
+%  &= \sum_{i=1}^{N} \frac{u_{i1}u_{i2}x_i(-2\rho'(\sigma_1^2\sigma_2^2 - \rho^2) - 4\rho^2\rho') + 4\sigma_1^2\sigma_2^2x_i\rho\rho'}{(\sigma_1^2\sigma_2^2 - \rho^2)^2}\\
+%  &= \sum_{i=1}^{N} \frac{4\sigma_1^2\sigma_2^2\rho\rho' - u_{i1}u_{i2}\rho'(2\sigma_1^2\sigma_2^2 - 2\rho^2)}{(\sigma_1^2\sigma_2^2 - \rho^2)^2}x_i\\
+ &= \sum_{i=1}^{N} \rho' \frac{4\sigma_1^2\sigma_2^2\rho - 2u_{i1}u_{i2}(\sigma_1^2\sigma_2^2 - \rho^2)}{(\sigma_1^2\sigma_2^2 - \rho^2)^2}
  \end{align*}
  
- Plugging in the MLEs for each nuisance parameter, we can replace $\sigma_1^2$ with $\hat{\rho}_{11} = \sum_{i=1}^{N} u_{2i}^2$ and $\sigma_2^2$ with $\hat{\rho}_{22} = \sum_{i=1}^{N} \hat{u}_{i2}^2$. We also replace $\bm{\alpha}$ with $\bm{0}$ as specified in $H_0$, and $\rho_{12}(\hat{\alpha}_0)$ is equal to $\sum_{i=1}^{N} \hat{u}_{i1}\hat{u}_{i2}$. 
+ Plugging in the MLEs for each nuisance parameter, we can replace $\sigma_1^2$ with $\hat{\rho}_{11} = \sum_{i=1}^{N} u_{2i}^2$ and $\sigma_2^2$ with $\hat{\rho}_{22} = \sum_{i=1}^{N} \hat{u}_{i2}^2$. We also replace $\bm{\alpha}$ with $\bm{0}$ as specified in $H_0$, and $\rho(\hat{\alpha}_0)$ is equal to $\sum_{i=1}^{N} \hat{u}_{i1}\hat{u}_{i2}$. 
 
 \begin{align*}
-    \tilde{d}_{\sigma_1^2} = \sum_{i=1}^{N} \hat{\rho}_{12}' \frac{(\hat{\sigma}_1^2\hat{\sigma}_2^2 + \hat{\rho}_{12}^2)(\hat{u}_{i1}\hat{u}_{i2} - \hat{\rho}_{12})}{(\hat{\sigma}_1^2\hat{\sigma}_2^2 - \hat{\rho}_{12}^2)^2}\bm{\tilde{x}}_i
+    \tilde{d}_{\sigma_1^2} = \sum_{i=1}^{N} \hat{\rho}' \frac{(\hat{\sigma}_1^2\hat{\sigma}_2^2 + \hat{\rho}^2)(\hat{u}_{i1}\hat{u}_{i2} - \hat{\rho})}{(\hat{\sigma}_1^2\hat{\sigma}_2^2 - \hat{\rho}^2)^2}\bm{\tilde{x}}_i
     % &= -\frac{1}{2}\frac{\partial log(|\Sigma|)}{\partial \sigma_1^2}\mid_{H_0} + \frac{\partial u^T \Sigma^{-1}u}{\sigma_1^2}\mid_{H_0}\\ 
-    % &= \frac{\hat{\rho}_{22}(\hat{\rho}_{11}\hat{\rho}_{22} - {\rho}_{12}(\hat{\alpha}_0)^2) + \sum_{i=1}^{N} \hat{u}_{i2}^2(\hat{\rho}_{11}\hat{\rho}_{22} - {\rho}_{12}(\hat{\alpha}_0)^2) - (\hat{u}_{i2}^2\hat{\rho}_{11} + \hat{u}_{i1}^2\hat{\rho}_{22} - 2\hat{u}_{i1}\hat{u}_{i2}\rho_{12}(\hat{\alpha}_0))\sigma_2^2}{(\hat{\rho}_{11}\hat{\rho}_{22} - \rho_{12}^2)^2}\\
+    % &= \frac{\hat{\rho}_{22}(\hat{\rho}_{11}\hat{\rho}_{22} - {\rho}_{12}(\hat{\alpha}_0)^2) + \sum_{i=1}^{N} \hat{u}_{i2}^2(\hat{\rho}_{11}\hat{\rho}_{22} - {\rho}_{12}(\hat{\alpha}_0)^2) - (\hat{u}_{i2}^2\hat{\rho}_{11} + \hat{u}_{i1}^2\hat{\rho}_{22} - 2\hat{u}_{i1}\hat{u}_{i2}\rho(\hat{\alpha}_0))\sigma_2^2}{(\hat{\rho}_{11}\hat{\rho}_{22} - \rho^2)^2}\\
     % & = 0\\
     % \tilde{d}_{\sigma_2^2} &= 0\\
     % \tilde{d}_{\alpha} &= -\frac{1}{2}
-    % \sum_{i=1}^{N} \rho_{12}' \frac{4\sigma_1^2\sigma_2^2\rho_{12} - 2\hat{u}_{i1}\hat{u}_{i2}(\sigma_1^2\sigma_2^2 + \rho_{12}^2) - 2\rho_{12}(\sigma_1^2\rho_{12} - \rho_{12}^2)}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}x_i\\
-    % &= -\frac{1}{2}\sum_{i=1}^{2}\rho_{12}' \frac{2\sigma_1^2\sigma_2^2\rho_{12} + 2\rho_{12}^3 - 2\hat{u}_{i1}\hat{u}_{i2}(\sigma_1^2 + \sigma_2^2 + \rho_{12}^2)}{(\sigma_1^2\sigma_2^2- \rho_{12}^^2)^2}\\
-    % &= -\frac{1}{2} \sum_{i=1}^{N} \rho_{12}' \frac{2(\sigma_1^2\sigma_2^2 + \rho_{12}^2)(\rho_{12} - \hat{u}_{i1}\hat{u}_{i2})}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}\\
-    % &= \sum_{i=1}^{N} \rho_{12}' \frac{(\sigma_1^2\sigma_2^2 + \rho_{12}^2)(\hat{u}_{i1}\hat{u}_{i2} - \rho_{12})}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}\bm{x}_i
+    % \sum_{i=1}^{N} \rho' \frac{4\sigma_1^2\sigma_2^2\rho - 2\hat{u}_{i1}\hat{u}_{i2}(\sigma_1^2\sigma_2^2 + \rho^2) - 2\rho(\sigma_1^2\rho - \rho^2)}{(\sigma_1^2\sigma_2^2 - \rho^2)^2}x_i\\
+    % &= -\frac{1}{2}\sum_{i=1}^{2}\rho' \frac{2\sigma_1^2\sigma_2^2\rho + 2\rho^3 - 2\hat{u}_{i1}\hat{u}_{i2}(\sigma_1^2 + \sigma_2^2 + \rho^2)}{(\sigma_1^2\sigma_2^2- \rho^^2)^2}\\
+    % &= -\frac{1}{2} \sum_{i=1}^{N} \rho' \frac{2(\sigma_1^2\sigma_2^2 + \rho^2)(\rho - \hat{u}_{i1}\hat{u}_{i2})}{(\sigma_1^2\sigma_2^2 - \rho^2)^2}\\
+    % &= \sum_{i=1}^{N} \rho' \frac{(\sigma_1^2\sigma_2^2 + \rho^2)(\hat{u}_{i1}\hat{u}_{i2} - \rho)}{(\sigma_1^2\sigma_2^2 - \rho^2)^2}\bm{x}_i
 \end{align*}
-where $\hat{\rho}_{12}' = \rho_{12}'(\hat{\alpha}_0)$. Ultimately, the first two entries of the score vector that corresponds to the variance parameters $\sigma_1^2$ and $\sigma_2^2$ become zero, and only the entries related to the parameter of interest ($\bm{\tilde{\alpha}}$) are relevant. 
+where $\hat{\rho}' = \rho'(\hat{\alpha}_0)$. Ultimately, the first two entries of the score vector that corresponds to the variance parameters $\sigma_1^2$ and $\sigma_2^2$ become zero, and only the entries related to the parameter of interest ($\bm{\tilde{\alpha}}$) are relevant. 
 
 
 \subsection*{Fisher Information}
@@ -381,37 +380,39 @@ $$\mathcal{I}(\Sigma)_{m,n}= \frac{1}{2} tr\left(  \Sigma^{-1}\frac{\partial \el
 Then, we get the following for each element of $\mathcal{I}(\Sigma)$:
 \begin{align*}
     \mathcal{I}(\Sigma)_{\sigma_1^2 \sigma_1^2} &=
-    \frac{1}{2} \frac{\sigma_2^4}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}\\
-    \mathcal{I}(\Sigma)_{\sigma_2^2\sigma_2^2} &=
-    \frac{1}{2} \frac{\sigma_1^4}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}\\
-    \mathcal{I}(\Sigma)_{\tilde{\bm{\alpha}}\tilde{\bm{\alpha}}}& = 2\sum_{i=1}^{N} \bm{\tilde{x}}_i \bm{\tilde{x}}_i^T \frac{\rho_{12}^2 \rho_{12}'^2 + \sigma_1^2\sigma_2^2\rho_{12}'^2}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}\\
-    \mathcal{I}(\theta)_{\sigma_1^2\sigma_2^2} &=-\frac{\rho_{12} \rho_{12}'\sigma_2^2}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}\bm{\tilde{x}}_i\\
-    \mathcal{I}(\theta)_{\sigma_1^2\bm{\tilde{\alpha}}} &= -\frac{\rho_{12} \rho_{12}'\sigma_1^2}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}\bm{\tilde{x}}_i
+    \frac{1}{2} \frac{\sigma_2^4}{(\sigma_1^2\sigma_2^2 - \rho^2)^2}, 
+    \mathcal{I}(\Sigma)_{\sigma_2^2\sigma_2^2} =
+    \frac{1}{2} \frac{\sigma_1^4}{(\sigma_1^2\sigma_2^2 - \rho^2)^2}, 
+    \mathcal{I}(\Sigma)_{\tilde{\bm{\alpha}}\tilde{\bm{\alpha}}} = 2\sum_{i=1}^{N} \bm{\tilde{x}}_i \bm{\tilde{x}}_i^T \frac{\rho^2 \rho'^2 + \sigma_1^2\sigma_2^2\rho'^2}{(\sigma_1^2\sigma_2^2 - \rho^2)^2}\\
+    \mathcal{I}(\theta)_{\sigma_1^2\sigma_2^2} &=
+    \frac{1}{2}\frac{\rho^2}{(\sigma_1^2\sigma_2^2-\rho^2},
+    \mathcal{I}(\theta)_{\sigma_2^2\bm{\tilde{\alpha}}} =-\frac{\rho \rho'\sigma_2^2}{(\sigma_1^2\sigma_2^2 - \rho^2)^2}\bm{\tilde{x}}_i, 
+    \mathcal{I}(\theta)_{\sigma_1^2\bm{\tilde{\alpha}}} = -\frac{\rho \rho'\sigma_1^2}{(\sigma_1^2\sigma_2^2 - \rho^2)^2}\bm{\tilde{x}}_i
 \end{align*}
 Finally, putting them altogether ,
 \begin{equation*}
-\mathcal{I}(\sigma_1^2, \sigma_2^2, \bm{\tilde{\alpha}}) = -\frac{1}{(\sigma_1^2\sigma_2^2 - \rho_{12}^2)^2}\begin{bmatrix}
-\frac{1}{2} \sigma_2^4 & \frac{1}{2} \rho_{12}^2 & -\rho_{12}\rho_{12}'\sigma_2^2 \bm{\tilde{x}}_i^T\\
-\frac{1}{2} \rho_{12}^2 & \frac{1}{2} \sigma_1^4 & -\rho_{12} \rho_{12}'\sigma_1^2 \bm{\tilde{x}}_i^T \\
--\rho_{12} \rho_{12}'\sigma_2^2 \bm{\tilde{x}}_i & -\rho_{12} \rho_{12}'\sigma_1^2\bm{\tilde{x}}_i &  (\rho_{12}^2 \rho_{12}'^2 + \sigma_1^2\sigma_2^2 \rho_{12}'^2)\bm{\tilde{x}}_i \bm{\tilde{x}}_i^T
+\mathcal{I}(\sigma_1^2, \sigma_2^2, \bm{\tilde{\alpha}}) = -\frac{1}{(\sigma_1^2\sigma_2^2 - \rho^2)^2}\begin{bmatrix}
+\frac{1}{2} \sigma_2^4 & \frac{1}{2} \rho^2 & -\rho\rho'\sigma_2^2 \bm{\tilde{x}}_i^T\\
+\frac{1}{2} \rho^2 & \frac{1}{2} \sigma_1^4 & -\rho \rho'\sigma_1^2 \bm{\tilde{x}}_i^T \\
+-\rho \rho'\sigma_2^2 \bm{\tilde{x}}_i & -\rho \rho'\sigma_1^2\bm{\tilde{x}}_i &  (\rho^2 \rho'^2 + \sigma_1^2\sigma_2^2 \rho'^2)\bm{\tilde{x}}_i \bm{\tilde{x}}_i^T
 \end{bmatrix}
 \end{equation*}
 
-Consider the above Fisher Information matrix as a block matrix. Since the first two entries of the score vector are zeros, we only need the bottom right block of the inverted $\mathcal{I}$. After plugging in the MLEs, it turns out to be
-$$\tilde{\mathcal{I}}_{\bm{\tilde{\alpha}}\bm{\tilde{\alpha}}}^{-1} = \frac{(\sigma_1^2\sigma_2^2-\rho_{12}^2)^4}{\rho_{12}'^2(\sigma_1^2\sigma_2^2+\rho_{12}^2)}(\bm{x}_i\bm{x}_i^T)^{-1}$$
+Consider the above Fisher Information matrix as a block matrix. Since the first two entries of the score vector are zeros, we only need the bottom right block of the inverted $\mathcal{I}$, and this can be computed using Schur's formula (\cite{haynsworth1968schur}). After plugging in the MLEs, 
+$$\{\tilde{\mathcal{I}}^{-1} \}_{\bm{\tilde{\alpha}}\bm{\tilde{\alpha}}^T} = \frac{(\hat{\sigma}_1^2\hat{\sigma}_2^2-\hat{\rho}^2)^4}{\hat{\rho}'^2(\hat{\sigma}_1^2\hat{\sigma}_2^2+\hat{\rho}^2)^3}(\bm{\tilde{x}}_i\bm{\tilde{x}}_i^T)^{-1}$$
 % The inverse of $\mathcal{I}$
 % \begin{equation}
 %   \mathcal{I}^{-1} = \begin{bmatrix}
-%     2\rho_{11^2} & 2\rho_{12}^2 & 2\frac{\sigma_1^2\rho_{12}}{\rho_{12}'}\bm{x}_i^T\\
-%     2\rho_{12}^2 & 2\sigma_2^2^2 & 2\frac{\sigma_2^2\rho_{12}}{\rho_{12}'}\bm{x}_i^T\\
-%     2\frac{\sigma_1^2\rho_{12}}{\rho_{12}'}\bm{x}_i & 2\frac{\sigma_2^2\rho_{12}}{\rho_{12}'}\bm{x}_i & \frac{\sigma_1^2\sigma_2^2+\rho_{12}^2}{\rho_{12}'^2}(\bm{x}_i\bm{x}_i^T)^{-1}
+%     2\rho_{11^2} & 2\rho^2 & 2\frac{\sigma_1^2\rho}{\rho'}\bm{x}_i^T\\
+%     2\rho^2 & 2\sigma_2^2^2 & 2\frac{\sigma_2^2\rho}{\rho'}\bm{x}_i^T\\
+%     2\frac{\sigma_1^2\rho}{\rho'}\bm{x}_i & 2\frac{\sigma_2^2\rho}{\rho'}\bm{x}_i & \frac{\sigma_1^2\sigma_2^2+\rho^2}{\rho'^2}(\bm{x}_i\bm{x}_i^T)^{-1}
 %     \end{bmatrix}
 % \end{equation}
 
-\noindent Finally, we get our score statistic
+\noindent We get our score statistic
 $$
-    q_{12} = \frac{1}{N(\hat{\sigma}_1^2\hat{\sigma}_2^2+\hat{\rho}_{12}^2)}\sum_{i=1}^{N} (\hat{u}_{i1}\hat{u}_{i2}-\hat{\rho}_{12})\bm{\tilde{x}}_i^T (\sum_{i=1}^{N}\bm{\tilde{x}}_i \bm{\tilde{x}}_i^T)^{-1}
-    \sum_{i=1}^{N} (\hat{u}_{i1}\hat{u}_{i2}-\hat{\rho}_{12})\bm{\tilde{x}}_i
+    q = \frac{1}{\hat{\sigma}_1^2\hat{\sigma}_2^2+\hat{\rho}^2}\sum_{i=1}^{N} (\hat{u}_{i1}\hat{u}_{i2}-\hat{\rho})\bm{\tilde{x}}_i^T (\sum_{i=1}^{N}\bm{\tilde{x}}_i \bm{\tilde{x}}_i^T)^{-1}
+    \sum_{i=1}^{N} (\hat{u}_{i1}\hat{u}_{i2}-\hat{\rho})\bm{\tilde{x}}_i
 $$
 
 \section*{Appendix B. Small Sample Correction}
@@ -449,6 +450,83 @@ $$\gamma = P(\chi_{P}^2 \geq C_{\gamma}) = P(q \geq g(C_{\gamma})) = P(g^{-1}(q)
 Our final test statistic $\tilde{q}_{12}$ is the real solution to the following equation 
 $$q - g(C_{\gamma}) = 0$$
 which is guaranteed to be unique by the monotonicity of $g$. The cubic equation can be solved both analytically and numerically efficiently given the covariate $X$. 
+
+\section*{Appendix C. Derivation of the distribution of $d_1$}
+
+First, we create a new covariate matrix $\check{X}$ from $X$ that does not affect the linear regression in (\ref{eq:framework_2genes}). Add the intercept column to $X$ and consider the column as $x_p$ where $p = 0$, and normalize it so that $\frac{1}{N-1}\check{X}^T\check{X} = I_{(P+1) \times (P+1)}$. Lastly, scale it so that $\sum_{i=1}^{N} \check{x}_{ip} = 0$ for $p = 1, \cdots, P$ and $\frac{1}{N-1}\sum_{i=1}^{N} \check{x}_{ip}^2 = 1$ for $p = 0, \cdots, P$. Then, we can re-write the score statistic like below.
+\begin{align*}
+q &= \frac{1}{(\hat{\sigma}_1^2 \hat{\sigma}_2^2 + \hat{\rho}_{12}^2)} \sum_{i=1}^{N} (\hat{u}_{i1}\hat{u}_{i2}-\hat{\rho}_{12})\check{\bm{x}}_i^T \left( \sum_{i=1}^{N} \check{\bm{x}}_i \check{\bm{x}}_i^T \right)^{-1} \sum_{i=1}^{N} (\hat{u}_{i1}\hat{u}_{i2} - \hat{\rho}_{12})\check{\bm{x}}_i\\
+&= \frac{1}{(N-1)(\hat{\sigma}_1^2\hat{\sigma}_2^2 + \hat{\rho}_{12}^2)} \sum_{i=1}^{N} (\hat{u}_{i1}\hat{u}_{i2}-\hat{\rho}_{12})^2\bm{\check{x}}_i^T\bm{\check{x}}_i\\
+    &= \frac{1}{(N-1)(\hat{\sigma}_1^2\hat{\sigma}_2^2 + \hat{\rho}_{12}^2)} \sum_{i=1}^{N} (\hat{u}_{i1}\hat{u}_{i2} - \hat{\rho}_{12})^2\sum_{p=0}^{P} \check{x}_{ip}^2\\
+    &= \frac{1}{(N-1)(\hat{\sigma}_1^2\hat{\sigma}_2^2 + \hat{\rho}_{12}^2)} \sum_{p=0}^{P} \sum_{i=1}^{N} \left( (\hat{u}_{i1} \hat{u}_{i2} - \hat{\rho}_{12} )\check{x}_{ip}\right)^2\\
+    &= 
+ \sum_{p=0}^{P}\left(\frac{1}{\sqrt{N-1}}
+ \sum_{i=1}^{N} \frac{\check{x}_{ip} \left(\hat{u}_{i1}\hat{u}_{i2} - \hat{\rho}_{12} \right)}{\sqrt{\hat{\sigma}_{1}^2\hat{\sigma}_{2}^2 + \hat{\rho}_{12}^2}}
+\right)^2 = \sum_{p=1}^{P}r_{12,p}^2
+\end{align*}
+The summation in the last line excludes $p = 0$ in the last line because $\sum_{i=1}^{N} \check{x}_{i0}(\hat{u}_{i1}\hat{u}_{i2} - \hat{\rho}_{12}) =
+\sum_{i=1}^{N} \check{x}_{i0}(\hat{u}_{i1}\hat{u}_{i2} - \sum_{j=1}^{N}\frac{\hat{u}_{j1} \hat{u}_{j2}}{N}) = 
+ \sqrt{\frac{N}{N-1}}\sum_{i=1}^{N} (\hat{u}_{i1}\hat{u}_{i2} - \sum_{j=1}^{N}\frac{\hat{u}_{j1} \hat{u}_{j2}}{N})
+$ is 0. \\
+
+Below, we derive the null distribution of the sum of score statistic
+$$d_1 = q_{12} + q_{13} + \cdots + q_{1K} = \sum_{p=1}^{P}\sum_{k=2}^{K} r_{1k,p}^2$$
+
+Consider a vector for a given $p$:
+\begin{align*}
+    \bm{r}_{1,p} = \begin{bmatrix} r_{12,p} \\ r_{13,p} \\ \cdots \\ r_{1K,p}\end{bmatrix} \rightarrow \mathcal{N}(\bm{0}, H_1)
+\end{align*}
+that combines the score statistic for a given covariate $\check{\bm{x}}_p$ across multiple variables $k = 2, \cdots, K$ with respect to their relationship with variable $1$. Due to multivariate central limit theorem, $\bm{r}_{1,p}$ asymptotically follows $\mathcal{N}(\bm{0}, H_1)$, where $H_1$ is a $(K-1) \times (K-1)$ covariance matrix. 
+Below, we derive $H_1$. \\
+
+First, for all $p = 1, \cdots, P$, $r_{12,p}$ individually follows the standard normal distribution, so that all diagonals of $H_1$ is 1. Note that the denominator converges in probability to a constant. Using the definition of $\hat{\sigma}_1^2$, $\hat{\sigma}_2^2$, and $\hat{\rho}_{12}^2$
+\begin{align*}
+\hat{\sigma}_1^2\hat{\sigma}_2^2+\hat{\rho}_{12}^2 = 
+\left( \frac{1}{N} \sum_{i=1}^{N} \hat{u}_{i1}^2\right)
+\left( \frac{1}{N} \sum_{i=1}^{N} \hat{u}_{i2}^2\right) + 
+\left( \frac{1}{N} \sum_{i=1}^{N} \hat{u}_{i1}\hat{u}_{i2}\right)^2,
+\end{align*}
+and we can see that each term converges in probability to $\sigma_1^2$, $\sigma_2^2$, and $\rho_{12}^2$ respectively. (If $X_n \xrightarrow{P} X$ and $Y_n \xrightarrow{P} Y$, then $X_nY_n\xrightarrow{P} XY$.) Therefore, due to continuous mapping theorem, 
+$$\frac{1}{\sqrt{\hat{\sigma}_1^2\hat{\sigma}_2^2 + \hat{\rho}_{12}^2}} \xrightarrow{P} \frac{1}{\sqrt{\sigma_1^2\sigma_2^2+\rho_{12}^2}}$$
+Now, we only need $E(\check{x}_{ip}(\hat{u}_{i1}\hat{u}_{i2} - \hat{\rho}_{12})) = 0$ and $Var(\check{x}_{ip}(\hat{u}_{i1}\hat{u}_{i2} - \hat{\rho}_{12})) =\frac{N-1}{N} \sigma_1^2\sigma_2^2+\rho_{12}^2$, both of which are shown below.
+\begin{align*}
+E \left(\check{x}_{ip}(\hat{u}_{i1}\hat{u}_{i2}-\hat{\rho}_{12})\right) = \check{x}_{ip} E(\hat{u}_{i1}\hat{u}_{i2} - \hat{\rho}_{12}) = 0
+\end{align*}
+Similarly for the variance,
+\begin{align*}
+Var\left(\check{x}_{ip}(\hat{u}_{i1}\hat{u}_{i2} - \hat{\rho}_{12})\right)
+&= \check{x}_{ip}^2 Var(\hat{u}_{i1}\hat{u}_{i2} - \hat{\rho}_{12}) \\
+&=Var(\hat{u}_{i1}\hat{u}_{i2} - \hat{\rho}_{12})\\ 
+&= \left(\sigma_1^2\sigma_2^2+\rho_{12}^2\right) \hspace{6mm} \text{(moments of multivariate normal)}
+\end{align*}
+
+\noindent Therefore, $d_1 = \sum_{p=1}^{P}\sum_{k=2}^{K}  r_{1k,p}^2$ where $r_{1k,p} \rightarrow \mathcal{N}(0,1)$ for all $p = 1, \cdots, P$. $r_{1k,p}$ can be easily acquired from the data through OLS residuals.\\
+
+Next, we derive the correlation between $r_{1k,p}$ and $r_{1\ell,p}$. 
+
+\begin{align*}
+    &cov(\check{x}_{ip} (\hat{u}_{i1}\hat{u}_{ik} - \hat{\rho}_{1k}),
+    \check{x}_{ip} (\hat{u}_{i1}\hat{u}_{i\ell} - \hat{\rho}_{1\ell})) \\
+    &= E(\check{x}_{ip}^2 (\hat{u}_{i1}\hat{u}_{ik} - \hat{\rho}_{1k})(\hat{u}_{i1}\hat{u}_{i\ell} - \hat{\rho}_{1\ell}))\\
+    &= \check{x}_{ip}^2 E(\hat{u}_{i1}^2\hat{u}_{ik}\hat{u}_{i\ell} - \hat{\rho}_{1k}\hat{u}_{i1}\hat{u}_{i\ell} - \hat{\rho}_{1\ell}\hat{u}_{i1}\hat{u}_{ik} + \hat{\rho}_{1k}\hat{\rho}_{1\ell})\\
+    &= \hat{x}_{ip}^2E((\sigma_{1}^2\rho_{k\ell} + \rho_{1k}\rho_{1\ell})-
+    (\frac{\hat{u}_{i1}\hat{u}_{i\ell}\sum_{j} \hat{u}_{j1}\hat{u}_{jk}}{N})  - 
+    (\frac{\hat{u}_{i1}\hat{u}_{ik}\sum_{j} \hat{u}_{j1}\hat{u}_{j\ell}}{N})
+     + (\frac{\sum_{j} \hat{u}_{j1}\hat{u}_{jk}}{N})(\frac{\sum_{j} \hat{u}_{j1}\hat{u}_{j\ell}}{N}))\\
+    &= \check{x}_{ip}^2 \left(\sigma_1^2\rho_{k\ell}+\rho_{1k}\rho_{1\ell} - \frac{\sigma_1^2\rho_{k\ell}+\rho_{1k}\rho_{1\ell}}{N} - \frac{\sigma_1^2\rho_{k\ell} + \rho_{1k}\rho_{1\ell}}{N}
+    + \frac{\sigma_1^2\rho_{k\ell} + \rho_{1k}\rho_{1\ell}}{N}
+    \right)\\
+    &= \frac{N-1}{N} \check{x}_{ip}^2(\sigma_1^2\rho_{k\ell}+\rho_{1k}\rho_{1\ell})
+\end{align*}
+Therefore, $\eta_{k,\ell} = (k-1, \ell-1)$'th element of $H$ is
+$$\frac{\sigma_1^2\rho_{k\ell} + \rho_{1k}\rho_{1\ell}}{\sqrt{({\sigma}_1^2{\sigma}_k^2+{\rho}_{1k}^2)({\sigma}_1^2{\sigma}_\ell^2+{\rho}_{1\ell}^2)}}$$
+
+Now, we derive the null distribution of $d_1 = \sum_{p=1}^{P}\|\bm{r}_{1,p}\|_2^2$. Let $H_1 = U_1\Lambda_1U_1^T$ be the eigen-decomposition of $H_1$, where $\Lambda$ is a diagonal matrix with elements $\lambda_{12}, \cdots, \lambda_{1K}$. Due to the orthogonal invariance of L2 norm, $d_1 = \| \bm{r}_{1,p}\|^2 = \|U_1\bm{r}_{1,p}\|^2$. Then, 
+$$U_1\bm{r}_{1,p} \sim \mathcal{N}(0, \Lambda_1)$$
+Now, each component of the left hand side is independent with known variance $\lambda_{1k}$ for $k = 2, \cdots, K$. The sum of the square of normal variables can be written as a sum of Gamma variables:
+$$\sum_{p=1}^{P} r_{1k,p}^2 \sim \Gamma\left(P/2, \lambda_{1k}/2\right)$$
+$$d_1 = \sum_{k=2}^{K}\sum_{p=1}^P  r_{1k,p}^2 \sim \sum_{k=2}^{K} \Gamma\left( \frac{P}{2}, \frac{\lambda_{1k}}{2}\right)$$
+
 
 \section*{Appendix D. Data}
 We use the genotype data and normalized gene expression level data from GTEx V6p release (\cite{lonsdale2013genotype}) to apply the method to the African American samples and their gene coexpression network. The data has been pre-processed by GTEx as explained in the GTEx portal (https://gtexportal.org). In order to select African Americans from the available samples, we first inferred the local ancestry of the samples who identified themselves as European Americans or African Americans and verified that their genetic ancestry is consistent. For local ancestry inference, we use the software LAMP that reaches as high as 98\% accuracy level for distinguishing YRI and CEU ancestry (\cite{pacsaniuc2009imputation}). We also need the reference minor allele frequency from the pure population, so we used data from 1000 Genome Project. For the initial setting of hyperparameters in LAMP, we use 7 for the number of generations of admixture, 0.2 and 0.8 for the initial proportion of CEU and YRI population, and $10^{-8}$ for recombination rate, but the results are robust to these settings. LAMP returns local ancestry at each SNP as the count of African chromosomes (0, 1, or 2) at each locus, and we use the SNP closest to the center of the gene to represent the local ancestry of the entire gene.  Around 92\% of the genes show no recombination event in all of the subjects, and less than 3\% of the genes have more than one individual with ancestry switch within the gene, so we believe this is a valid approximation. \\
